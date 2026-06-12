@@ -78,6 +78,8 @@ main{max-width:1280px;margin:0 auto;padding:28px 24px}
 .btn{padding:11px 24px;border:none;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
 .btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-light)}
 .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border)}.btn-ghost:hover{background:rgba(255,255,255,.05)}
+.btn-mult{background:var(--accent);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-mult:hover{background:var(--accent-light)}
 .plan-day-select{background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;font-size:.85rem;outline:none;cursor:pointer}
 .plan-day-select:focus{border-color:var(--accent)}
 .planner-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}
@@ -151,6 +153,35 @@ var currentFilter='all',currentPage=0,perPage=18;
 var mealPlan=JSON.parse(localStorage.getItem('mealPlan')||'{}');
 var checkedG=JSON.parse(localStorage.getItem('checkedG')||'{}');
 var notesData=localStorage.getItem('groceryNotes')||'';
+var currentRecipe=null,currentMultiplier=1;
+
+function scaleIngredient(text,m){
+  if(m===1)return text;
+  return text.replace(/(\d+\/\d+|\d+\.?\d*)/g,function(match){
+    if(match.indexOf('/')!==-1){var p=match.split('/');return(parseInt(p[0])*m)+'/'+parseInt(p[1])*m;}
+    var num=parseFloat(match);
+    var scaled=num*m;
+    return scaled===Math.floor(scaled)?String(Math.floor(scaled)):scaled.toFixed(1);
+  });
+}
+function toggleMultiplier(){
+  currentMultiplier=currentMultiplier===1?2:1;
+  renderIngredients();
+  var n=currentRecipe.nutrition;
+  var mult=currentMultiplier;
+  var el=document.getElementById('nutBarContainer');
+  if(el)el.innerHTML='<div class="nutrition-bar"><div class="nut-item"><span class="nut-value">'+(n.calories*mult)+'</span><span class="nut-label">Cal</span></div><div class="nut-item"><span class="nut-value">'+(n.protein_g*mult)+'g</span><span class="nut-label">Protein</span></div><div class="nut-item"><span class="nut-value">'+(n.carbs_g*mult)+'g</span><span class="nut-label">Carbs</span></div><div class="nut-item"><span class="nut-value">'+(n.fat_g*mult)+'g</span><span class="nut-label">Fat</span></div><div class="nut-item"><span class="nut-value">'+(n.fiber_g*mult)+'g</span><span class="nut-label">Fiber</span></div></div>';
+}
+function renderIngredients(){
+  if(!currentRecipe)return;
+  var ingHtml='<ul class="ing-list">'+currentRecipe.ingredients.map(function(i){return '<li>'+scaleIngredient(i,currentMultiplier)+'</li>';}).join('')+'</ul>';
+  var el=document.getElementById('ingListContainer');
+  if(el)el.innerHTML=ingHtml;
+  var servEl=document.getElementById('servingsDisplay');
+  if(servEl)servEl.textContent='Serves '+(currentRecipe.servings*currentMultiplier);
+  var btn=document.getElementById('multBtn');
+  if(btn)btn.textContent=currentMultiplier===1?'✕2 Double':'✕1 Reset';
+}
 
 function init(){
   var cats=[];
@@ -296,27 +327,25 @@ function goPage(p){currentPage=p;renderRecipes();window.scrollTo({top:320,behavi
 function openRecipe(id){
   var r=DATA.find(function(x){return x.id===id;});
   if(!r)return;
+  currentRecipe=r;currentMultiplier=1;
   document.getElementById('overlayBanner').style.background='linear-gradient(90deg,'+r.color+','+r.color_light+')';
   var n=r.nutrition;
-  var nutBar='<div class="nutrition-bar">'+
+  var dayOpts=DAYS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('');
+  var kidBadge=r.kid_friendly?' <span style="font-size:.75rem;color:var(--accent-light)">👶 Kid-friendly</span>':'';
+  document.getElementById('overlayBody').innerHTML=
+    '<img class="overlay-photo" src="images/'+r.id+'.png" alt="'+r.name+'" onerror="this.style.display='none'" onclick="openLightbox('images/'+r.id+'.png')">'+
+    '<div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px;flex-wrap:wrap"><span class="cat-badge" style="background:'+r.color+'">'+r.icon+' '+r.category+'</span><span class="chip chip-diff">'+r.difficulty+'</span><span class="chip chip-time" style="text-transform:none">⏱ '+r.prep_time+' + '+r.cook_time+'</span></div>'+
+    '<h2>'+r.name+'</h2><div id="servingsDisplay" style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px">Serves '+r.servings+kidBadge+'</div>'+
+    '<div id="nutBarContainer"><div class="nutrition-bar">'+
     '<div class="nut-item"><span class="nut-value">'+n.calories+'</span><span class="nut-label">Cal</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.protein_g+'g</span><span class="nut-label">Protein</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.carbs_g+'g</span><span class="nut-label">Carbs</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.fat_g+'g</span><span class="nut-label">Fat</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.fiber_g+'g</span><span class="nut-label">Fiber</span></div>'+
-  '</div>';
-  var dayOpts=DAYS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('');
-  var ingHtml='<ul class="ing-list">'+r.ingredients.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul>';
-  var stepHtml='<ol class="step-list">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol>';
-  var kidBadge=r.kid_friendly?' <span style="font-size:.75rem;color:var(--accent-light)">👶 Kid-friendly</span>':'';
-  document.getElementById('overlayBody').innerHTML=
-    '<img class="overlay-photo" src="images/'+r.id+'.png" alt="'+r.name+'" onerror="this.style.display=\'none\'" onclick="openLightbox(\'images/'+r.id+'.png\')">'+
-    '<div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px;flex-wrap:wrap"><span class="cat-badge" style="background:'+r.color+'">'+r.icon+' '+r.category+'</span><span class="chip chip-diff">'+r.difficulty+'</span><span class="chip chip-time" style="text-transform:none">⏱ '+r.prep_time+' + '+r.cook_time+'</span></div>'+
-    '<h2>'+r.name+'</h2><div style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px">Serves '+r.servings+kidBadge+'</div>'+
-    nutBar+
-    '<div style="margin-bottom:24px"><div class="section-title">📝 Ingredients</div>'+ingHtml+'</div>'+
-    '<div style="margin-bottom:24px"><div class="section-title">👩‍🍳 Instructions</div>'+stepHtml+'</div>'+
-    '<div class="detail-actions"><select class="plan-day-select" id="planDaySelect">'+dayOpts+'</select><button class="btn btn-primary" onclick="addToPlan('+r.id+')">📅 Add to Day</button><button class="btn btn-ghost" onclick="closeOverlay()">✕ Close</button></div>';
+    '</div></div>'+
+    '<div style="margin-bottom:24px"><div class="section-title">📝 Ingredients</div><div id="ingListContainer"><ul class="ing-list">'+r.ingredients.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div></div>'+
+    '<div style="margin-bottom:24px"><div class="section-title">\U0001f469\u200d\U0001f373 Instructions</div><ol class="step-list">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></div>'+
+    '<div class="detail-actions"><button class="btn-mult" id="multBtn" onclick="toggleMultiplier()">\u00d72 Double</button><select class="plan-day-select" id="planDaySelect">'+dayOpts+'</select><button class="btn btn-primary" onclick="addToPlan('+r.id+')">\ud83d\udcc5 Add to Day</button><button class="btn btn-ghost" onclick="closeOverlay()">\u2715 Close</button></div>';
   document.getElementById('recipeOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
