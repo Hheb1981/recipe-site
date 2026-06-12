@@ -331,25 +331,24 @@ function openRecipe(id){
   document.getElementById('overlayBanner').style.background='linear-gradient(90deg,'+r.color+','+r.color_light+')';
   var n=r.nutrition;
   var dayOpts=DAYS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('');
-  var kidBadge=r.kid_friendly?' <span style="font-size:.75rem;color:var(--accent-light)">👶 Kid-friendly</span>':'';
-  document.getElementById('overlayBody').innerHTML=
-    '<img class="overlay-photo" src="images/'+r.id+'.png" alt="'+r.name+'" onerror="this.style.display='none'" onclick="openLightbox('images/'+r.id+'.png')">'+
-    '<div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px;flex-wrap:wrap"><span class="cat-badge" style="background:'+r.color+'">'+r.icon+' '+r.category+'</span><span class="chip chip-diff">'+r.difficulty+'</span><span class="chip chip-time" style="text-transform:none">⏱ '+r.prep_time+' + '+r.cook_time+'</span></div>'+
-    '<h2>'+r.name+'</h2><div id="servingsDisplay" style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px">Serves '+r.servings+kidBadge+'</div>'+
-    '<div id="nutBarContainer"><div class="nutrition-bar">'+
+  var kidBadge=r.kid_friendly?' <span style="font-size:.75rem;color:var(\'--accent-light\')">Kid-friendly</span>':'';
+  var photoHtml='<img class="overlay-photo" src="images/'+r.id+'.png" alt="'+r.name+'" onerror="this.style.display=\'none\'" onclick="openLightbox(\'images/'+r.id+'.png\')">';
+  var catHtml='<div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px;flex-wrap:wrap"><span class="cat-badge" style="background:'+r.color+'">'+r.category+'</span><span class="chip chip-diff">'+r.difficulty+'</span><span class="chip chip-time" style="text-transform:none">'+r.prep_time+' + '+r.cook_time+'</span></div>';
+  var nameHtml='<h2>'+r.name+'</h2><div id="servingsDisplay" style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px">Serves '+r.servings+kidBadge+'</div>';
+  var nutHtml='<div id="nutBarContainer"><div class="nutrition-bar">'+
     '<div class="nut-item"><span class="nut-value">'+n.calories+'</span><span class="nut-label">Cal</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.protein_g+'g</span><span class="nut-label">Protein</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.carbs_g+'g</span><span class="nut-label">Carbs</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.fat_g+'g</span><span class="nut-label">Fat</span></div>'+
     '<div class="nut-item"><span class="nut-value">'+n.fiber_g+'g</span><span class="nut-label">Fiber</span></div>'+
-    '</div></div>'+
-    '<div style="margin-bottom:24px"><div class="section-title">📝 Ingredients</div><div id="ingListContainer"><ul class="ing-list">'+r.ingredients.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div></div>'+
-    '<div style="margin-bottom:24px"><div class="section-title">\U0001f469\u200d\U0001f373 Instructions</div><ol class="step-list">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></div>'+
-    '<div class="detail-actions"><button class="btn-mult" id="multBtn" onclick="toggleMultiplier()">\u00d72 Double</button><select class="plan-day-select" id="planDaySelect">'+dayOpts+'</select><button class="btn btn-primary" onclick="addToPlan('+r.id+')">\ud83d\udcc5 Add to Day</button><button class="btn btn-ghost" onclick="closeOverlay()">\u2715 Close</button></div>';
+  '</div></div>';
+  var ingHtml='<div style="margin-bottom:24px"><div class="section-title">Ingredients</div><div id="ingListContainer"><ul class="ing-list">'+r.ingredients.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div></div>';
+  var stepHtml='<div style="margin-bottom:24px"><div class="section-title">Instructions</div><ol class="step-list">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></div>';
+  var actionHtml='<div class="detail-actions"><button class="btn-mult" id="multBtn" onclick="toggleMultiplier()">2x Double</button><select class="plan-day-select" id="planDaySelect">'+dayOpts+'</select><button class="btn btn-primary" onclick="addToPlan('+r.id+')">Add to Day</button><button class="btn btn-ghost" onclick="closeOverlay()">Close</button></div>';
+  document.getElementById('overlayBody').innerHTML=photoHtml+catHtml+nameHtml+nutHtml+ingHtml+stepHtml+actionHtml;
   document.getElementById('recipeOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
-
 function closeOverlay(){
   document.getElementById('recipeOverlay').classList.remove('open');
   document.body.style.overflow='';
