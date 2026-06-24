@@ -1,494 +1,526 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>🍽️ Family Meal Planner — 50 Recipes</title>
-<style>
-:root{--bg:#111827;--bg-card:#1f2937;--bg-card-hover:#283548;--bg-elevated:#162032;--text:#e5e7eb;--text-dim:#9ca3af;--text-bright:#f9fafb;--accent:#10b981;--accent-light:#34d399;--border:#374151;--chip-bg:#1e2d4a;--header-bg:#0c1222;--radius:14px;--radius-sm:8px;--shadow:0 4px 20px rgba(0,0,0,.35)}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-header{background:var(--header-bg);border-bottom:3px solid var(--accent);padding:14px 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:rgba(12,18,34,.92)}
-.header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.logo{font-size:1.5rem;font-weight:900;letter-spacing:-.5px}.logo em{color:var(--accent-light);font-style:normal}
-.nav-tabs{display:flex;gap:4px;background:var(--bg-card);padding:4px;border-radius:12px}
-.nav-tab{padding:9px 20px;border:none;background:none;color:var(--text-dim);cursor:pointer;border-radius:10px;font-size:.82rem;font-weight:600;transition:all .2s;white-space:nowrap}
-.nav-tab:hover{color:var(--text);background:rgba(255,255,255,.06)}.nav-tab.active{background:var(--accent);color:#fff;font-weight:700}
-.search-wrap{position:relative;flex-shrink:0}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:.9rem;pointer-events:none}
-.search-input{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:9px 14px 9px 38px;border-radius:var(--radius-sm);width:240px;font-size:.85rem;outline:none;transition:all .2s}
-.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,.15)}::placeholder{color:#6b7280}
-main{max-width:1280px;margin:0 auto;padding:28px 24px}
-.page{display:none}.page.active{display:block;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.category-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.filter-btn{padding:8px 18px;border:2px solid var(--border);border-radius:24px;cursor:pointer;font-size:.78rem;font-weight:700;background:var(--bg-card);color:var(--text);transition:all .2s;display:flex;align-items:center;gap:6px}
-.filter-btn:hover{border-color:var(--accent);color:var(--accent-light);transform:translateY(-1px)}
-.filter-btn.active{color:#fff;border-color:transparent;transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.stats-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.stat-chip{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 18px;font-size:.82rem;color:var(--text-dim);display:flex;align-items:center;gap:8px}
-.stat-chip strong{color:var(--text-bright);font-size:1.15rem}
-.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.recipe-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
-.recipe-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
-.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:absolute;top:22px;left:16px;right:16px;z-index:2}
-.card-photo{width:100%;height:180px;object-fit:cover;border-radius:10px;margin-bottom:12px;display:block}
-.card-icon{font-size:1.8rem;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.5)}
-.card-number{font-size:.65rem;color:#fff;font-weight:700;letter-spacing:.5px;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:6px}
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;cursor:zoom-out;justify-content:center;align-items:center}
-.lightbox.open{display:flex;animation:lbIn .2s ease}
-@keyframes lbIn{from{opacity:0}to{opacity:1}}
-.lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.5);cursor:zoom-out}
-.lightbox-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.15);color:#fff;border:none;width:42px;height:42px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.lightbox-close:hover{background:rgba(255,255,255,.3)}
-.card-photo{width:100%;height:180px;object-fit:cover;border-radius:10px;margin-bottom:12px;display:block;cursor:zoom-in;transition:transform .2s,box-shadow .2s}
-.card-photo:hover{transform:scale(1.03);box-shadow:0 4px 16px rgba(0,0,0,.3)}
-.overlay-photo{width:100%;height:220px;object-fit:cover;border-radius:12px;margin-bottom:16px;display:block;cursor:zoom-in}
-.card-name{font-size:.95rem;font-weight:700;line-height:1.35;margin-bottom:8px;color:var(--text-bright)}
-.card-tags{display:flex;gap:5px;flex-wrap:wrap}
-.chip{font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:8px;color:#fff;text-transform:uppercase;letter-spacing:.4px}
-.chip-time{background:rgba(16,185,129,.2);color:var(--accent-light);text-transform:none;font-size:.7rem;padding:3px 8px;border:1px solid rgba(16,185,129,.3)}
-.chip-diff{background:rgba(251,191,36,.2);color:#fbbf24;text-transform:none;font-size:.7rem;padding:3px 8px;border:1px solid rgba(251,191,36,.3)}
-.card-kid{margin-top:8px;font-size:.7rem;color:var(--text-dim)}
-.card-kid span{color:var(--accent-light)}
-.no-results{text-align:center;padding:60px 20px;color:var(--text-dim);font-size:1rem}
-.no-results .emoji{font-size:3rem;margin-bottom:12px}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;backdrop-filter:blur(6px);overflow-y:auto;padding:20px}
-.overlay.open{display:flex;justify-content:center;align-items:flex-start}
-.overlay-card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;max-width:720px;width:100%;margin:24px auto;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.overlay-close{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.5);color:#fff;border:none;width:38px;height:38px;border-radius:50%;font-size:1.1rem;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.overlay-close:hover{background:rgba(0,0,0,.8)}
-.overlay-banner{height:6px;width:100%}
-.overlay-body{padding:28px 36px 36px}
-.overlay-body h2{font-size:1.6rem;font-weight:800;margin:10px 0 4px;line-height:1.2;color:var(--text-bright)}
-.cat-badge{display:inline-block;font-size:.7rem;font-weight:800;padding:4px 14px;border-radius:12px;color:#fff;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.nutrition-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;background:var(--bg-elevated);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border)}
-.nut-item{flex:1;text-align:center;min-width:70px}
-.nut-value{font-size:1.15rem;font-weight:800;color:var(--accent-light);display:block}
-.nut-label{font-size:.6rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-.ing-list{list-style:none}
-.ing-list li{padding:8px 0;font-size:.88rem;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:10px;color:var(--text)}
-.ing-list li::before{content:'▸';color:var(--accent);font-weight:700;flex-shrink:0;font-size:.85rem;margin-top:1px}
-.step-list{list-style:none;counter-reset:step}
-.step-list li{padding:10px 0 10px 36px;font-size:.88rem;position:relative;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04)}
-.step-list li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:10px;width:24px;height:24px;background:var(--accent);color:#fff;border-radius:50%;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center}
-.section-title{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent-light);margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid var(--border)}
-.detail-actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border);padding-top:20px}
-.btn{padding:11px 24px;border:none;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-light)}
-.btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border)}.btn-ghost:hover{background:rgba(255,255,255,.05)}
-.btn-mult{background:var(--accent);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-mult:hover{background:var(--accent-light)}
-.plan-day-select{background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;font-size:.85rem;outline:none;cursor:pointer}
-.plan-day-select:focus{border-color:var(--accent)}
-.planner-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}
-.planner-day{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;min-height:160px;transition:border-color .2s}
-.planner-day:hover{border-color:var(--accent)}
-.planner-day h4{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-light);margin-bottom:12px}
-.planner-day .assigned{font-size:.85rem;font-weight:600;line-height:1.35;cursor:pointer;transition:color .2s}
-.planner-day .assigned:hover{color:var(--accent-light)}
-.planner-day .remove-btn{background:none;border:none;color:#6b7280;cursor:pointer;font-size:.68rem;padding:0;margin-top:8px;display:block;transition:color .2s}
-.planner-day .remove-btn:hover{color:#ef4444}
-.planner-empty{color:var(--text-dim);font-size:.78rem;font-style:italic;padding:8px 0}
-.grocery-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px}
-.grocery-section h3{font-size:1.05rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.grocery-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px}
-.grocery-item{display:flex;align-items:center;gap:10px;font-size:.85rem;padding:5px 0}
-.grocery-item input[type=checkbox]{accent-color:var(--accent);width:17px;height:17px;cursor:pointer;flex-shrink:0}
-.grocery-item.checked label{text-decoration:line-through;color:var(--text-dim)}
-.notes-area{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:10px;padding:14px;font-size:.85rem;min-height:90px;resize:vertical;font-family:inherit;outline:none;margin-top:10px}
-.notes-area:focus{border-color:var(--accent)}
-.action-btn{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:10px 18px;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
-.action-btn:hover{background:rgba(255,255,255,.06);border-color:var(--text-dim)}
-.top-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.top-bar h2{font-size:1.4rem;font-weight:800}
-.pagination{display:flex;gap:6px;justify-content:center;margin-top:32px;flex-wrap:wrap}
-.pg-btn{padding:8px 15px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);border-radius:var(--radius-sm);cursor:pointer;font-size:.82rem;font-weight:700;transition:all .2s}
-.pg-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.pg-btn:hover:not(.active){background:rgba(255,255,255,.05)}
-.toast{position:fixed;bottom:28px;right:28px;background:var(--accent);color:#fff;padding:14px 28px;border-radius:12px;font-size:.85rem;font-weight:700;z-index:300;transform:translateY(100px);opacity:0;transition:all .35s;box-shadow:0 8px 30px rgba(16,185,129,.3)}
-.toast.show{transform:translateY(0);opacity:1}
-.empty-state{text-align:center;padding:60px 20px;color:var(--text-dim)}
-.empty-state .emoji{font-size:3rem;margin-bottom:16px}
-@media(max-width:640px){.header-inner{flex-direction:column;align-items:flex-start}.nav-tabs{width:100%}.nav-tab{flex:1;text-align:center;padding:8px 12px;font-size:.75rem}.search-input{width:100%}.recipe-grid{grid-template-columns:1fr}.planner-grid{grid-template-columns:1fr 1fr}.overlay-body{padding:20px}.nutrition-bar{gap:4px}.nut-item{min-width:60px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Site - High Protein Meals</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+        header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 32px 20px; text-align: center; }
+        header h1 { font-size: 28px; margin-bottom: 8px; }
+        header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .category-section { margin-bottom: 40px; }
+        .category-section h2 { margin-bottom: 16px; }
+        .cat-badge { display: inline-block; color: white; padding: 6px 16px; border-radius: 20px; font-size: 14px; text-transform: uppercase; font-weight: 600; }
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .recipe-card-link { text-decoration: none; color: inherit; }
+        .recipe-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+        .recipe-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .recipe-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .card-info { padding: 14px; }
+        .card-info h3 { font-size: 14px; line-height: 1.4; margin-bottom: 8px; }
+        .card-macros { display: flex; gap: 12px; font-size: 12px; color: #666; }
+        .card-macros span { background: #f0f0f0; padding: 3px 8px; border-radius: 6px; }
+    </style>
 </head>
 <body>
-<header>
-<div class="header-inner">
-<div class="logo">🍽️ Family <em>Meal Planner</em></div>
-<div class="nav-tabs">
-<button id="tab-browse" class="nav-tab active" onclick="switchPage('browse')">📋 Recipes</button>
-<button id="tab-planner" class="nav-tab" onclick="switchPage('planner')">📅 Meal Plan</button>
-<button id="tab-grocery" class="nav-tab" onclick="switchPage('grocery')">🛒 Grocery</button>
-</div>
-<div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Search 50 recipes…" id="searchInput" oninput="renderRecipes()"></div>
-</div>
-</header>
-<main>
-<div id="page-browse" class="page active">
-<div class="category-bar" id="categoryBar"></div>
-<div class="stats-bar" id="statsBar"></div>
-<div class="recipe-grid" id="recipeGrid"></div>
-<div class="no-results" id="noResults" style="display:none"><div class="emoji">🤔</div>No recipes found.</div>
-<div class="pagination" id="pagination"></div>
-</div>
-<div id="page-planner" class="page">
-<div class="top-bar"><h2>📅 Weekly Meal Planner</h2><button class="action-btn" onclick="window.print()">🖨️ Print</button><button class="action-btn" onclick="clearPlan()">🗑️ Clear All</button></div>
-<div class="planner-grid" id="plannerGrid"></div>
-</div>
-<div id="page-grocery" class="page">
-<div class="top-bar"><h2>🛒 Grocery List</h2><button class="action-btn" onclick="window.print()">🖨️ Print</button><button class="action-btn" onclick="resetChecks()">☑️ Reset Checks</button></div>
-<div id="groceryContent"></div>
-</div>
-</main>
-<div class="overlay" id="recipeOverlay" onclick="if(event.target===this)closeOverlay()"><div class="overlay-card"><button class="overlay-close" onclick="closeOverlay()">✕</button><div class="overlay-banner" id="overlayBanner"></div><div class="overlay-body" id="overlayBody"></div></div></div>
-<div class="lightbox" id="photoLightbox" onclick="closeLightbox()"><button class="lightbox-close" onclick="closeLightbox()">✕</button><img id="lightboxImg" src="" alt=""></div>
-<div class="toast" id="toast"></div>
-<script>
-var DATA=[{"id": 1, "key": "chicken-1", "name": "Lemon-Herb Chicken Thighs + Broccoli & Couscous", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Lemon-Herb_Chicken_Thighs_+_Broccoli_&_Couscous.pdf", "prep_time": "15 min", "cook_time": "30 min", "difficulty": "Easy", "servings": 4, "ingredients": ["6 bone-in, skin-on chicken thighs", "3 tbsp olive oil", "2 lemons (juiced + zested)", "4 cloves garlic, minced", "1 tbsp fresh rosemary, chopped", "1 tbsp fresh thyme", "2 cups broccoli florets", "1½ cups couscous", "2¾ cups chicken broth", "Salt & pepper to taste"], "steps": ["Pat chicken thighs dry and season generously with salt, pepper, half the lemon juice, and herbs.", "Heat 2 tbsp olive oil in a large oven-safe skillet over medium-high heat. Sear chicken skin-side down for 5-6 min until golden. Flip and sear 3 min.", "Toss broccoli with remaining oil, salt, and pepper. Arrange around chicken.", "Transfer skillet to 400°F oven. Bake 20-25 min until chicken reaches 165°F internal.", "Meanwhile, bring broth and remaining lemon juice to a boil. Stir in couscous, cover, and let sit 5 min. Fluff with fork.", "Serve chicken and broccoli over couscous. Drizzle with pan juices and garnish with lemon zest."], "nutrition": {"calories": 520, "protein_g": 38, "carbs_g": 42, "fat_g": 22, "fiber_g": 4}, "kid_friendly": true, "tags": ["quick", "one-pan", "sheet-pan", "mediterranean", "family-favorite"]}, {"id": 2, "key": "chicken-2", "name": "Chicken Stir-Fry with Snap Peas & Brown Rice", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Chicken_Stir-Fry_with_Snap_Peas_&_Brown_Rice.pdf", "prep_time": "20 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs chicken breast, sliced thin", "2 cups snap peas, trimmed", "1 red bell pepper, sliced", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "3 tbsp low-sodium soy sauce", "1 tbsp oyster sauce", "1 tbsp sesame oil", "2 cups cooked brown rice", "2 green onions, sliced", "1 tbsp vegetable oil"], "steps": ["Mix soy sauce, oyster sauce, and 2 tbsp water in a small bowl. Set aside.", "Heat vegetable oil in a wok or large skillet over high heat. Stir-fry chicken 4-5 min until cooked through. Remove.", "Add snap peas and bell pepper. Stir-fry 3-4 min until tender-crisp.", "Add garlic and ginger, cook 30 seconds until fragrant.", "Return chicken to wok. Pour sauce over and toss to coat, 1-2 min.", "Serve over brown rice. Garnish with green onions and a drizzle of sesame oil."], "nutrition": {"calories": 480, "protein_g": 42, "carbs_g": 45, "fat_g": 12, "fiber_g": 5}, "kid_friendly": true, "tags": ["quick", "stovetop", "asian", "meal-prep", "high-protein"]}, {"id": 3, "key": "chicken-3", "name": "Greek Yogurt Chicken Skewers + Greek Salad", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Greek_Yogurt_Chicken_Skewers_+_Greek_Salad.pdf", "prep_time": "20 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs chicken breast, cut into 1.5-inch cubes", "1 cup plain Greek yogurt", "2 tbsp lemon juice", "3 cloves garlic, minced", "1 tbsp dried oregano", "1 tbsp olive oil", "1 English cucumber, diced", "2 cups cherry tomatoes, halved", "½ red onion, thinly sliced", "½ cup kalamata olives", "4 oz feta cheese, crumbled", "2 tbsp red wine vinegar", "Salt & pepper"], "steps": ["Combine yogurt, lemon juice, garlic, oregano, oil, salt, and pepper. Toss chicken cubes in marinade. Refrigerate at least 30 min (or overnight).", "Thread chicken onto skewers (soak wooden skewers 30 min first).", "Grill or broil skewers 12-14 min, turning occasionally, until cooked through (165°F).", "Meanwhile, combine cucumber, tomatoes, onion, olives, and feta in a bowl. Dress with vinegar, oil, salt, and pepper.", "Serve skewers over or alongside the Greek salad. Pita bread optional."], "nutrition": {"calories": 450, "protein_g": 44, "carbs_g": 18, "fat_g": 22, "fiber_g": 3}, "kid_friendly": true, "tags": ["mediterranean", "grilled", "high-protein", "fresh"]}, {"id": 4, "key": "chicken-4", "name": "Honey-Garlic Chicken & Veggie Sheet Pan", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Honey-Garlic_Chicken_&_Veggie_Sheet_Pan.pdf", "prep_time": "15 min", "cook_time": "25 min", "difficulty": "Easy", "servings": 4, "ingredients": ["6 chicken drumsticks", "2 cups baby potatoes, halved", "2 cups broccoli florets", "1 large carrot, sliced", "¼ cup honey", "3 tbsp soy sauce", "3 cloves garlic, minced", "1 tbsp apple cider vinegar", "1 tbsp olive oil", "½ tsp red pepper flakes (optional)", "Salt & pepper"], "steps": ["Preheat oven to 425°F. Line a large sheet pan with parchment.", "Toss potatoes and carrots with olive oil, salt, and pepper. Spread on sheet pan and roast 10 min.", "Meanwhile, whisk honey, soy sauce, garlic, vinegar, and red pepper flakes.", "Add chicken and broccoli to the pan. Drizzle honey-garlic sauce over everything.", "Roast 20-25 min until chicken is 165°F and vegetables are tender.", "Spoon pan juices over chicken before serving."], "nutrition": {"calories": 490, "protein_g": 36, "carbs_g": 40, "fat_g": 18, "fiber_g": 4}, "kid_friendly": true, "tags": ["sheet-pan", "one-pan", "family-favorite", "easy-cleanup"]}, {"id": 5, "key": "chicken-5", "name": "Chicken Fajita Bowls", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Chicken_Fajita_Bowls.pdf", "prep_time": "15 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs chicken breast, sliced into strips", "2 bell peppers (mixed colors), sliced", "1 large onion, sliced", "2 tbsp olive oil", "1 tbsp chili powder", "1 tsp cumin", "1 tsp smoked paprika", "½ tsp garlic powder", "2 cups cooked rice", "½ cup shredded cheese", "Salsa, sour cream, avocado for topping", "Lime wedges", "Salt & pepper"], "steps": ["Toss chicken strips with chili powder, cumin, paprika, garlic powder, salt, and pepper.", "Heat 1 tbsp oil in a large skillet over high heat. Cook chicken 5-6 min until browned. Remove.", "Add remaining oil, peppers, and onion. Sauté 5-6 min until charred edges appear.", "Return chicken to pan, toss with vegetables.", "Serve over rice with cheese, salsa, sour cream, avocado, and lime wedges."], "nutrition": {"calories": 510, "protein_g": 42, "carbs_g": 42, "fat_g": 18, "fiber_g": 5}, "kid_friendly": true, "tags": ["mexican", "quick", "bowl", "family-favorite", "customizable"]}, {"id": 6, "key": "chicken-6", "name": "Teriyaki Chicken Rice Bowls", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Teriyaki_Chicken_Rice_Bowls.pdf", "prep_time": "15 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs chicken thigh, boneless, diced", "½ cup low-sodium soy sauce", "¼ cup brown sugar", "2 tbsp rice vinegar", "1 tbsp cornstarch + 2 tbsp water", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "2 cups steamed jasmine rice", "1 cup edamame, shelled", "1 carrot, julienned", "2 tbsp sesame seeds", "Sriracha (optional)"], "steps": ["Whisk soy sauce, brown sugar, rice vinegar, garlic, and ginger to make teriyaki sauce.", "Heat oil in a large skillet over medium-high heat. Cook chicken 6-8 min until golden.", "Pour teriyaki sauce over chicken. Simmer 3-4 min until sauce thickens (add cornstarch slurry at the end).", "Divide rice into bowls. Top with teriyaki chicken.", "Garnish with edamame, julienned carrot, sesame seeds, and sriracha if desired."], "nutrition": {"calories": 530, "protein_g": 40, "carbs_g": 48, "fat_g": 16, "fiber_g": 3}, "kid_friendly": true, "tags": ["asian", "bowl", "sweet", "family-favorite", "quick"]}, {"id": 7, "key": "chicken-7", "name": "Chicken Parmesan with Zucchini Noodles", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Chicken_Parmesan_with_Zucchini_Noodles.pdf", "prep_time": "15 min", "cook_time": "25 min", "difficulty": "Medium", "servings": 4, "ingredients": ["4 chicken breasts, pounded to ½-inch thick", "1 cup panko breadcrumbs", "½ cup grated Parmesan", "1 egg, beaten", "1 cup marinara sauce", "1 cup shredded mozzarella", "3 medium zucchini, spiralized", "2 tbsp olive oil", "1 tsp Italian seasoning", "Salt & pepper", "Fresh basil for garnish"], "steps": ["Preheat oven to 400°F. Set up breading station: egg in one dish, panko mixed with Parmesan and Italian seasoning in another.", "Salt and pepper chicken. Dip in egg, then breadcrumb mixture, pressing to coat.", "Heat 1 tbsp oil in oven-safe skillet. Bread chicken 3 min per side until golden.", "Top each breast with marinara and mozzarella. Bake 12-15 min until cheese is bubbly.", "Meanwhile, sauté zucchini noodles in remaining oil 2-3 min (don't overcook). Season with salt.", "Serve chicken over zoodles. Garnish with fresh basil."], "nutrition": {"calories": 460, "protein_g": 46, "carbs_g": 20, "fat_g": 22, "fiber_g": 4}, "kid_friendly": true, "tags": ["italian", "low-carb", "comfort-food", "high-protein"]}, {"id": 8, "key": "chicken-8", "name": "Thai Peanut Chicken Lettuce Wraps", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Thai_Peanut_Chicken_Lettuce_Wraps.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs ground chicken", "3 tbsp creamy peanut butter", "2 tbsp soy sauce", "1 tbsp rice vinegar", "1 tbsp honey", "1 tsp sriracha", "2 cloves garlic, minced", "1 tbsp fresh ginger, grated", "1 head butter lettuce, leaves separated", "1 carrot, shredded", "2 tbsp chopped peanuts", "Fresh cilantro, lime wedges", "1 tbsp sesame oil"], "steps": ["Heat sesame oil in a skillet over medium-high heat. Cook ground chicken 6-8 min, breaking up, until no pink remains.", "Add garlic and ginger, cook 1 min.", "Whisk peanut butter, soy sauce, vinegar, honey, and sriracha with 2 tbsp warm water. Pour over chicken.", "Toss to coat and cook 2 min until sauce thickens slightly.", "Spoon chicken mixture into lettuce cups. Top with shredded carrot, peanuts, cilantro, and lime juice."], "nutrition": {"calories": 420, "protein_g": 38, "carbs_g": 14, "fat_g": 24, "fiber_g": 3}, "kid_friendly": true, "tags": ["asian", "peanut", "fresh", "light", "fun"]}, {"id": 9, "key": "chicken-9", "name": "Chicken Burrito Bowls", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Chicken_Burrito_Bowls.pdf", "prep_time": "15 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs chicken breast, diced", "1 tbsp olive oil", "1 packet taco seasoning", "2 cups cooked rice (white or brown)", "1 can (15 oz) black beans, drained and rinsed", "1 cup corn kernels", "1 cup pico de gallo", "½ cup shredded cheddar", "Sour cream, avocado, lime wedges", "Hot sauce (optional)", "Salt"], "steps": ["Toss chicken with taco seasoning and a pinch of salt. Heat oil in a large skillet over medium-high heat.", "Cook chicken 6-8 min, stirring occasionally, until cooked through and slightly charred.", "Warm black beans and corn in a small saucepan or microwave.", "Assemble bowls: rice base, then chicken, beans, corn, pico de gallo, cheese, sour cream, and avocado.", "Squeeze lime over top. Add hot sauce if desired."], "nutrition": {"calories": 550, "protein_g": 44, "carbs_g": 52, "fat_g": 16, "fiber_g": 8}, "kid_friendly": true, "tags": ["mexican", "bowl", "family-favorite", "meal-prep", "customizable"]}, {"id": 10, "key": "chicken-10", "name": "Chicken & White Bean Soup with Kale", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Chicken_&_White_Bean_Soup_with_Kale.pdf", "prep_time": "15 min", "cook_time": "30 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs chicken breast", "2 tbsp olive oil", "1 onion, diced", "3 cloves garlic, minced", "2 carrots, diced", "2 celery stalks, diced", "2 cans (15 oz each) white beans, drained", "6 cups chicken broth", "3 cups chopped kale", "1 tsp dried thyme", "1 bay leaf", "Juice of 1 lemon", "Salt & pepper", "Crusty bread for serving"], "steps": ["Heat olive oil in a large pot over medium heat. Season chicken with salt and pepper. Sear 4 min per side. Remove and set aside.", "Add onion, carrot, and celery. Sauté 5 min until softened. Add garlic and thyme, cook 1 min.", "Add broth, white beans, and bay leaf. Bring to a boil. Reduce to simmer.", "Return chicken to pot. Simmer 15-20 min until chicken is cooked through.", "Remove chicken, shred with two forks, return to pot. Stir in kale and lemon juice. Cook 3 min until kale wilts.", "Remove bay leaf. Adjust seasoning. Serve with crusty bread."], "nutrition": {"calories": 420, "protein_g": 42, "carbs_g": 38, "fat_g": 10, "fiber_g": 10}, "kid_friendly": true, "tags": ["soup", "comfort-food", "meal-prep", "healthy", "batch-cook"]}, {"id": 11, "key": "chicken-11", "name": "Creamy Tuscan Chicken + Sun-Dried Tomatoes", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Creamy_Tuscan_Chicken_+_Sun-Dried_Tomatoes.pdf", "prep_time": "15 min", "cook_time": "25 min", "difficulty": "Medium", "servings": 4, "ingredients": ["4 boneless chicken breasts", "2 tbsp olive oil", "1 cup heavy cream", "½ cup chicken broth", "3 cloves garlic, minced", "½ cup sun-dried tomatoes (oil-packed), sliced", "2 cups fresh baby spinach", "½ cup grated Parmesan", "1 tsp Italian seasoning", "Salt & pepper", "Fresh basil", "Pasta or rice for serving"], "steps": ["Season chicken with Italian seasoning, salt, and pepper. Heat oil in a large skillet over medium-high heat.", "Sear chicken 5-6 min per side until golden and cooked through. Remove and set aside.", "In same skillet, add garlic and sun-dried tomatoes. Sauté 1 min.", "Pour in broth and heavy cream. Stir, scraping up browned bits. Simmer 3-4 min.", "Stir in spinach and Parmesan. Cook 2 min until spinach wilts and sauce thickens.", "Return chicken to skillet. Spoon sauce over chicken. Garnish with basil. Serve over pasta or rice."], "nutrition": {"calories": 520, "protein_g": 44, "carbs_g": 14, "fat_g": 32, "fiber_g": 2}, "kid_friendly": true, "tags": ["italian", "creamy", "comfort-food", "one-pan"]}, {"id": 12, "key": "chicken-12", "name": "Mediterranean Chicken Thighs + Olives", "category": "CHICKEN", "category_key": "chicken", "color": "#388E3C", "color_light": "#E8F5E9", "icon": "🐔", "pdf": "Recipe_Card_Mediterranean_Chicken_Thighs_+_Olives.pdf", "prep_time": "15 min", "cook_time": "35 min", "difficulty": "Easy", "servings": 4, "ingredients": ["6 bone-in chicken thighs", "2 tbsp olive oil", "1 cup mixed olives (kalamata + green)", "1 pint cherry tomatoes", "1 red onion, quartered", "4 cloves garlic, smashed", "2 tbsp capers", "1 tbsp dried oregano", "½ cup dry white wine or chicken broth", "Juice of 1 lemon", "Fresh oregano for garnish", "Salt & pepper"], "steps": ["Preheat oven to 400°F. Pat chicken thighs dry, season with salt, pepper, and dried oregano.", "Heat oil in a large oven-safe skillet. Sear chicken skin-side down 5-6 min until deeply golden. Flip and sear 3 min. Remove.", "Add onion and tomatoes to the pan. Cook 3-4 min until tomatoes start to burst.", "Add garlic, olives, and capers. Pour in wine/broth and lemon juice.", "Return chicken to pan, skin-side up. Transfer to oven. Bake 20-25 min.", "Garnish with fresh oregano. Serve with crusty bread or couscous."], "nutrition": {"calories": 480, "protein_g": 36, "carbs_g": 12, "fat_g": 30, "fiber_g": 3}, "kid_friendly": true, "tags": ["mediterranean", "sheet-pan", "one-pan", "flavorful"]}, {"id": 13, "key": "turkey-1", "name": "Turkey Taco Bowls", "category": "TURKEY", "category_key": "turkey", "color": "#7B1FA2", "color_light": "#F3E5F5", "icon": "🦃", "pdf": "Recipe_Card_Turkey_Taco_Bowls.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs ground turkey", "1 packet taco seasoning", "1 tbsp olive oil", "2 cups cooked rice", "1 can (15 oz) black beans, warmed", "1 cup shredded cheese", "½ cup salsa", "¼ cup sour cream", "Shredded lettuce", "Diced avocado", "Lime wedges"], "steps": ["Heat olive oil in a large skillet over medium-high heat.", "Add ground turkey, breaking it up. Cook 6-8 min until no pink remains. Drain excess fat.", "Add taco seasoning and ¼ cup water. Stir and simmer 3 min.", "Assemble bowls: rice, seasoned turkey, black beans, cheese, salsa, sour cream, lettuce, and avocado.", "Serve with lime wedges and tortilla chips on the side."], "nutrition": {"calories": 530, "protein_g": 42, "carbs_g": 44, "fat_g": 20, "fiber_g": 7}, "kid_friendly": true, "tags": ["mexican", "bowl", "quick", "family-favorite", "customizable"]}, {"id": 14, "key": "turkey-2", "name": "Turkey Bolognese + Whole Wheat Pasta", "category": "TURKEY", "category_key": "turkey", "color": "#7B1FA2", "color_light": "#F3E5F5", "icon": "🦃", "pdf": "Recipe_Card_Turkey_Bolognese_+_Whole_Wheat_Pasta.pdf", "prep_time": "15 min", "cook_time": "30 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs ground turkey", "2 tbsp olive oil", "1 onion, finely diced", "2 carrots, finely diced", "2 celery stalks, finely diced", "4 cloves garlic, minced", "1 can (28 oz) crushed tomatoes", "2 tbsp tomato paste", "½ cup chicken broth", "1 tsp dried oregano", "1 tsp dried basil", "1 lb whole wheat spaghetti", "Parmesan for serving", "Salt & pepper"], "steps": ["Heat olive oil in a large pot over medium heat. Sauté onion, carrot, and celery 5 min until soft.", "Add garlic, cook 1 min. Push vegetables to the side, add ground turkey, breaking it up. Cook 6-8 min.", "Stir in tomato paste and cook 1 min. Add crushed tomatoes, broth, oregano, and basil. Season with salt and pepper.", "Simmer uncovered 20-25 min, stirring occasionally, until thickened.", "Meanwhile, cook pasta according to package directions. Drain.", "Serve sauce over pasta. Top with grated Parmesan."], "nutrition": {"calories": 560, "protein_g": 40, "carbs_g": 62, "fat_g": 14, "fiber_g": 9}, "kid_friendly": true, "tags": ["italian", "comfort-food", "batch-cook", "meal-prep", "family-favorite"]}, {"id": 15, "key": "turkey-3", "name": "Turkey Meatball Sub Bites", "category": "TURKEY", "category_key": "turkey", "color": "#7B1FA2", "color_light": "#F3E5F5", "icon": "🦃", "pdf": "Recipe_Card_Turkey_Meatball_Sub_Bites.pdf", "prep_time": "20 min", "cook_time": "20 min", "difficulty": "Medium", "servings": 4, "ingredients": ["1½ lbs ground turkey", "½ cup breadcrumbs", "1 egg, beaten", "3 cloves garlic, minced", "¼ cup grated Parmesan", "1 tsp Italian seasoning", "6 sub rolls or hot dog buns", "1½ cups marinara sauce", "1 cup shredded mozzarella", "Fresh basil", "Salt & pepper"], "steps": ["Preheat oven to 375°F. Combine ground turkey, breadcrumbs, egg, garlic, Parmesan, Italian seasoning, salt, and pepper. Mix gently.", "Form into small meatballs (about 1-inch diameter). Place on a parchment-lined baking sheet.", "Bake 18-20 min until cooked through (165°F internal).", "Warm marinara sauce in a saucepan. Toss meatballs in sauce.", "Split rolls, fill with meatballs and sauce. Top with mozzarella.", "Place under broiler 2-3 min until cheese melts. Garnish with basil."], "nutrition": {"calories": 520, "protein_g": 38, "carbs_g": 44, "fat_g": 22, "fiber_g": 3}, "kid_friendly": true, "tags": ["italian", "comfort-food", "family-favorite", "fun"]}, {"id": 16, "key": "turkey-4", "name": "Turkey & Sweet Potato Chili", "category": "TURKEY", "category_key": "turkey", "color": "#7B1FA2", "color_light": "#F3E5F5", "icon": "🦃", "pdf": "Recipe_Card_Turkey_&_Sweet_Potato_Chili.pdf", "prep_time": "15 min", "cook_time": "35 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs ground turkey", "1 tbsp olive oil", "1 onion, diced", "3 cloves garlic, minced", "2 sweet potatoes, peeled and cubed", "1 can (28 oz) diced tomatoes", "1 can (15 oz) kidney beans, drained", "1 cup chicken broth", "2 tbsp chili powder", "1 tsp cumin", "1 tsp smoked paprika", "Salt & pepper", "Shredded cheese, sour cream for topping"], "steps": ["Heat oil in a large pot over medium heat. Cook turkey 6-8 min, breaking up. Drain fat.", "Add onion, cook 3 min. Add garlic, chili powder, cumin, and paprika. Stir 1 min.", "Add sweet potatoes, diced tomatoes, kidney beans, and broth. Bring to a boil.", "Reduce heat and simmer 25-30 min until sweet potatoes are tender.", "Season with salt and pepper. Serve with shredded cheese and sour cream."], "nutrition": {"calories": 480, "protein_g": 38, "carbs_g": 42, "fat_g": 16, "fiber_g": 9}, "kid_friendly": true, "tags": ["soup", "comfort-food", "batch-cook", "meal-prep", "winter"]}, {"id": 17, "key": "turkey-5", "name": "Asian Turkey Lettuce Cups", "category": "TURKEY", "category_key": "turkey", "color": "#7B1FA2", "color_light": "#F3E5F5", "icon": "🦃", "pdf": "Recipe_Card_Asian_Turkey_Lettuce_Cups.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs ground turkey", "1 tbsp sesame oil", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "3 tbsp hoisin sauce", "2 tbsp soy sauce", "1 tbsp rice vinegar", "1 can (8 oz) water chestnuts, diced", "2 green onions, sliced", "1 head butter lettuce, leaves separated", "Sesame seeds", "Sriracha (optional)"], "steps": ["Heat sesame oil in a wok or skillet over high heat. Add turkey, breaking up. Cook 6-8 min.", "Add garlic and ginger, cook 1 min. Add water chestnuts.", "Stir in hoisin, soy sauce, and rice vinegar. Cook 2-3 min until slightly thickened.", "Remove from heat. Stir in green onions.", "Spoon into lettuce cups. Sprinkle with sesame seeds and sriracha if desired."], "nutrition": {"calories": 380, "protein_g": 36, "carbs_g": 16, "fat_g": 18, "fiber_g": 2}, "kid_friendly": true, "tags": ["asian", "quick", "light", "fresh", "fun"]}, {"id": 18, "key": "turkey-6", "name": "Turkey Pesto Stuffed Bell Peppers", "category": "TURKEY", "category_key": "turkey", "color": "#7B1FA2", "color_light": "#F3E5F5", "icon": "🦃", "pdf": "Recipe_Card_Turkey_Pesto_Stuffed_Bell_Peppers.pdf", "prep_time": "20 min", "cook_time": "30 min", "difficulty": "Medium", "servings": 4, "ingredients": ["6 bell peppers, tops cut off and seeded", "1½ lbs ground turkey", "¾ cup pesto (store-bought or homemade)", "1 cup cooked rice", "½ cup shredded mozzarella", "1 can (14 oz) diced tomatoes", "2 cloves garlic, minced", "½ cup breadcrumbs", "Parmesan for topping", "Salt & pepper", "Fresh basil"], "steps": ["Preheat oven to 375°F. Place peppers cut-side up in a baking dish.", "Cook turkey in a skillet 6-8 min. Add garlic, cook 1 min. Add diced tomatoes.", "Combine turkey mixture with cooked rice, ½ cup pesto, and breadcrumbs. Season with salt and pepper.", "Stuff mixture into peppers. Top with mozzarella and a drizzle of remaining pesto.", "Cover with foil and bake 25 min. Remove foil, bake 5 more min until cheese is golden.", "Garnish with Parmesan and fresh basil before serving."], "nutrition": {"calories": 480, "protein_g": 38, "carbs_g": 30, "fat_g": 24, "fiber_g": 5}, "kid_friendly": true, "tags": ["italian", "stuffed", "family-favorite", "colorful"]}, {"id": 19, "key": "salmon-fish-1", "name": "Sheet-Pan Salmon + Asparagus + Sweet Potato", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Sheet-Pan_Salmon_+_Asparagus_+_Sweet_Potato.pdf", "prep_time": "15 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 salmon fillets (6 oz each)", "1 sweet potato, diced small", "1 bunch asparagus, trimmed", "3 tbsp olive oil", "2 cloves garlic, minced", "1 lemon (juiced + sliced)", "1 tsp smoked paprika", "Fresh dill for garnish", "Salt & pepper"], "steps": ["Preheat oven to 425°F. Toss sweet potato with 1 tbsp oil, salt, and pepper. Spread on a sheet pan and roast 10 min.", "Toss asparagus with 1 tbsp oil. Season salmon with paprika, salt, and pepper.", "Push sweet potatoes to one side. Add salmon and asparagus to the pan. Scatter garlic and lemon slices.", "Roast 12-15 min until salmon flakes with a fork (145°F) and sweet potatoes are tender.", "Drizzle with remaining lemon oil. Garnish with fresh dill."], "nutrition": {"calories": 460, "protein_g": 40, "carbs_g": 22, "fat_g": 22, "fiber_g": 5}, "kid_friendly": true, "tags": ["sheet-pan", "one-pan", "healthy", "omega-3", "quick"]}, {"id": 20, "key": "salmon-fish-2", "name": "Teriyaki Salmon Rice Bowls", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Teriyaki_Salmon_Rice_Bowls.pdf", "prep_time": "15 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 salmon fillets (6 oz each)", "½ cup teriyaki sauce (store-bought)", "2 cups steamed sushi rice", "1 avocado, sliced", "1 cucumber, sliced", "2 tbsp sesame seeds", "Pickled ginger (optional)", "Sriracha mayo (optional)", "2 green onions, sliced"], "steps": ["Place salmon in a shallow dish. Pour teriyaki sauce over and marinate 10-15 min.", "Heat a skillet over medium-high heat. Cook salmon skin-side up 4 min. Flip and cook 3-4 more min.", "Meanwhile, divide rice into bowls.", "Top rice with salmon (break into chunks), avocado, cucumber, and pickled ginger.", "Drizzle with remaining teriyaki sauce, sesame seeds, and sriracha mayo. Garnish with green onions."], "nutrition": {"calories": 560, "protein_g": 42, "carbs_g": 44, "fat_g": 22, "fiber_g": 4}, "kid_friendly": true, "tags": ["asian", "bowl", "omega-3", "fresh", "family-favorite"]}, {"id": 21, "key": "salmon-fish-3", "name": "Cajun Salmon Tacos + Mango Salsa", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Cajun_Salmon_Tacos_+_Mango_Salsa.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 salmon fillets (6 oz each)", "2 tbsp Cajun seasoning", "1 tbsp olive oil", "8 small flour or corn tortillas", "1 mango, diced", "½ red onion, finely diced", "1 jalapeño, seeded and minced", "Juice of 1 lime", "¼ cup fresh cilantro, chopped", "¼ cup sour cream", "Shredded red cabbage", "Lime wedges"], "steps": ["Combine mango, red onion, jalapeño, lime juice, and cilantro for salsa. Season with salt. Set aside.", "Rub salmon with Cajun seasoning. Heat oil in a skillet over medium-high heat.", "Cook salmon 4-5 min per side until cooked through. Break into large chunks.", "Warm tortillas. Fill with cabbage, salmon, mango salsa, and a dollop of sour cream.", "Serve with lime wedges."], "nutrition": {"calories": 480, "protein_g": 38, "carbs_g": 40, "fat_g": 18, "fiber_g": 4}, "kid_friendly": true, "tags": ["mexican", "fresh", "spicy", "colorful", "summer"]}, {"id": 22, "key": "salmon-fish-4", "name": "Lemon-Dill Salmon + Cucumber-Yogurt Sauce", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Lemon-Dill_Salmon_+_Cucumber-Yogurt_Sauce.pdf", "prep_time": "15 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 salmon fillets (6 oz each)", "2 tbsp olive oil", "2 lemons (juiced)", "3 tbsp fresh dill, chopped", "1 English cucumber, grated and drained", "1 cup plain Greek yogurt", "2 cloves garlic, minced", "1 tbsp lemon zest", "1 tbsp capers (optional)", "Rice or crusty bread for serving", "Salt & pepper"], "steps": ["Combine grated cucumber, yogurt, garlic, half the dill, lemon juice, salt, and pepper. Stir and refrigerate.", "Season salmon with salt, pepper, and lemon zest. Heat oil in a skillet over medium heat.", "Cook salmon 5-6 min per side until golden and cooked through.", "Serve salmon over rice or bread, topped with cucumber-yogurt sauce, capers, and remaining dill.", "Squeeze extra lemon juice over the top."], "nutrition": {"calories": 440, "protein_g": 42, "carbs_g": 10, "fat_g": 26, "fiber_g": 1}, "kid_friendly": true, "tags": ["mediterranean", "light", "fresh", "low-carb", "omega-3"]}, {"id": 23, "key": "salmon-fish-5", "name": "Cilantro-Lime Salmon + Black Bean Rice", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Cilantro-Lime_Salmon_+_Black_Bean_Rice.pdf", "prep_time": "15 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 salmon filches (6 oz each)", "Juice of 2 limes", "¼ cup fresh cilantro, chopped", "2 tsp chili powder", "1 tsp cumin", "1 tbsp olive oil", "2 cups cooked rice", "1 can (15 oz) black beans, rinsed and warmed", "1 avocado, diced", "Hot sauce (optional)", "Salt & pepper"], "steps": ["Mix lime juice, cilantro, chili powder, cumin, and olive oil. Rub over salmon. Let sit 10 min.", "Heat a grill pan or skillet over medium-high heat. Cook salmon 4-5 min per side.", "Stir half the cilantro-lime mixture into the warm rice. Fold in black beans.", "Serve salmon over cilantro-lime black bean rice. Top with avocado and extra cilantro.", "Add hot sauce if desired."], "nutrition": {"calories": 540, "protein_g": 42, "carbs_g": 44, "fat_g": 20, "fiber_g": 8}, "kid_friendly": true, "tags": ["mexican", "bowl", "fresh", "omega-3", "colorful"]}, {"id": 24, "key": "salmon-fish-6", "name": "Mediterranean Baked Cod + Tomatoes & Olives", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Mediterranean_Baked_Cod_+_Tomatoes_&_Olives.pdf", "prep_time": "15 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 cod fillets (6 oz each)", "2 tbsp olive oil", "1 pint cherry tomatoes, halved", "½ cup kalamata olives", "3 cloves garlic, sliced", "2 tbsp capers", "1 tsp dried oregano", "½ cup white wine or broth", "Fresh parsley", "Crusty bread for serving", "Salt & pepper"], "steps": ["Preheat oven to 400°F. Place cod fillets in a baking dish. Season with salt, pepper, and oregano.", "Scatter tomatoes, olives, garlic, and capers around and over the fish.", "Drizzle everything with olive oil. Pour wine/broduct into the dish.", "Bake 18-22 min until cod flakes easily.", "Garnish with fresh parsley. Serve with crusty bread to soak up the juices."], "nutrition": {"calories": 340, "protein_g": 38, "carbs_g": 10, "fat_g": 14, "fiber_g": 2}, "kid_friendly": true, "tags": ["mediterranean", "light", "healthy", "sheet-pan", "low-calorie"]}, {"id": 25, "key": "salmon-fish-7", "name": "Tuna Poke Bowls", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Tuna_Poke_Bowls.pdf", "prep_time": "20 min", "cook_time": "0 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ lbs sushi-grade tuna, cubed", "3 tbsp soy sauce", "1 tbsp sesame oil", "1 tbsp rice vinegar", "1 tsp sriracha", "2 cups cooked sushi rice", "1 avocado, diced", "1 cucumber, diced", "1 cup edamame", "2 tbsp sesame seeds", "Nori strips", "Pickled ginger", "Wasabi (optional)"], "steps": ["Toss cubed tuna with soy sauce, sesame oil, rice vinegar, and sriracha. Let marinate 10 min.", "Divide rice into bowls.", "Arrange tuna, avocado, cucumber, and edamame on top of rice.", "Garnish with sesame seeds, nori strips, and pickled ginger.", "Serve with wasabi and extra soy sauce on the side."], "nutrition": {"calories": 520, "protein_g": 46, "carbs_g": 38, "fat_g": 18, "fiber_g": 5}, "kid_friendly": true, "tags": ["asian", "fresh", "no-cook", "omega-3", "trendy"]}, {"id": 26, "key": "salmon-fish-8", "name": "Pesto Crusted Tilapia + Roasted Vegetables", "category": "SALMON & FISH", "category_key": "salmon-fish", "color": "#1565C0", "color_light": "#E3F2FD", "icon": "🐟", "pdf": "Recipe_Card_Pesto_Crusted_Tilapia_+_Roasted_Vegetables.pdf", "prep_time": "15 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 tilapia fillets (6 oz each)", "½ cup pesto", "½ cup panko breadcrumbs", "2 cups zucchini, sliced", "2 cups bell pepper, chopped", "1 cup cherry tomatoes", "3 tbsp olive oil", "1 lemon", "Parmesan for topping", "Salt & pepper"], "steps": ["Preheat oven to 425°F. Toss vegetables with 2 tbsp oil, salt, and pepper. Spread on a sheet pan.", "Mix pesto with panko. Spread mixture on top of each tilapia fillet.", "Nestle fish into the vegetables on the sheet pan. Drizzle with remaining oil.", "Roast 18-20 min until fish is opaque and crust is golden.", "Squeeze lemon over everything. Sprinkle with Parmesan."], "nutrition": {"calories": 420, "protein_g": 40, "carbs_g": 18, "fat_g": 22, "fiber_g": 3}, "kid_friendly": true, "tags": ["sheet-pan", "one-pan", "italian", "quick", "family-favorite"]}, {"id": 27, "key": "beef-1", "name": "Beef & Black Bean Stuffed Peppers", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Beef_&_Black_Bean_Stuffed_Peppers.pdf", "prep_time": "20 min", "cook_time": "30 min", "difficulty": "Medium", "servings": 4, "ingredients": ["6 bell peppers, tops cut off and seeded", "1 lb lean ground beef", "1 can (15 oz) black beans, drained", "1 cup cooked rice", "1 cup corn kernels", "1 cup shredded cheddar", "1 can (14 oz) diced tomatoes", "2 cloves garlic, minced", "1 tsp cumin", "1 tsp chili powder", "Salt & pepper", "Sour cream and cilantro for topping"], "steps": ["Preheat oven to 375°F. Place peppers cut-side up in a baking dish.", "Brown ground beef in a skillet 6-8 min. Drain fat. Add garlic, cumin, and chili powder.", "Stir in black beans, rice, corn, and half the diced tomatoes. Season with salt and pepper.", "Stuff mixture into peppers. Top with remaining tomatoes and shredded cheese.", "Cover with foil. Bake 25 min. Remove foil, bake 5 more min until cheese is bubbly.", "Top with sour cream and cilantro."], "nutrition": {"calories": 480, "protein_g": 36, "carbs_g": 42, "fat_g": 18, "fiber_g": 9}, "kid_friendly": true, "tags": ["mexican", "stuffed", "family-favorite", "meal-prep"]}, {"id": 28, "key": "beef-2", "name": "Korean Beef Rice Bowls", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Korean_Beef_Rice_Bowls.pdf", "prep_time": "10 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb lean ground beef", "3 tbsp soy sauce", "2 tbsp brown sugar", "1 tbsp sesame oil", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "½ tsp red pepper flakes", "2 cups steamed jasmine rice", "2 carrots, julienned", "2 cups steamed broccoli", "2 green onions, sliced", "Sesame seeds", "Fried egg per bowl (optional)"], "steps": ["Whisk soy sauce, brown sugar, sesame oil, garlic, ginger, and red pepper flakes.", "Cook ground beef in a skillet over medium-high heat 6-8 min, breaking up. Drain fat.", "Pour sauce over beef. Stir and simmer 3-4 min until slightly caramelized.", "Divide rice into bowls. Top with beef, carrots, and broccoli.", "Garnish with green onions, sesame seeds, and a fried egg if desired."], "nutrition": {"calories": 520, "protein_g": 38, "carbs_g": 46, "fat_g": 18, "fiber_g": 4}, "kid_friendly": true, "tags": ["asian", "bowl", "quick", "sweet-savory", "family-favorite"]}, {"id": 29, "key": "beef-3", "name": "Beef & Broccoli Stir-Fry", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Beef_&_Broccoli_Stir-Fry.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb flank steak, sliced thin against the grain", "3 cups broccoli florets", "3 tbsp soy sauce", "2 tbsp oyster sauce", "1 tbsp cornstarch", "1 tbsp sesame oil", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "2 tsp brown sugar", "2 cups steamed rice", "Sesame seeds", "1 tbsp vegetable oil"], "steps": ["Toss sliced beef with 1 tbsp soy sauce and cornstarch. Let sit 10 min.", "Mix remaining soy sauce, oyster sauce, sesame oil, and brown sugar. Set aside.", "Heat vegetable oil in a wok over high heat. Stir-fry beef 3-4 min until browned. Remove.", "Add broccoli, stir-fry 3-4 min. Add garlic and ginger, cook 30 sec.", "Return beef to wok. Pour sauce over. Toss 1-2 min until glossy.", "Serve over rice. Sprinkle with sesame seeds."], "nutrition": {"calories": 500, "protein_g": 42, "carbs_g": 42, "fat_g": 16, "fiber_g": 4}, "kid_friendly": true, "tags": ["asian", "stovetop", "quick", "high-protein", "classic"]}, {"id": 30, "key": "beef-4", "name": "Zucchini Noodle Bolognese", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Zucchini_Noodle_Bolognese.pdf", "prep_time": "15 min", "cook_time": "30 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb lean ground beef", "2 tbsp olive oil", "1 onion, finely diced", "2 carrots, finely diced", "3 cloves garlic, minced", "1 can (28 oz) crushed tomatoes", "2 tbsp tomato paste", "1 tsp dried oregano", "1 tsp dried basil", "4 medium zucchini, spiralized", "Parmesan for serving", "Salt & pepper"], "steps": ["Heat oil in a large pot. Sauté onion and carrot 5 min. Add garlic, cook 1 min.", "Add ground beef, breaking up. Cook 6-8 min until browned. Drain fat.", "Stir in tomato paste, crushed tomatoes, oregano, and basil. Season well.", "Simmer 20-25 min until thickened, stirring occasionally.", "Sauté zucchini noodles in a separate pan 2-3 min (don't overcook).", "Serve sauce over zoodles. Top with Parmesan."], "nutrition": {"calories": 400, "protein_g": 36, "carbs_g": 22, "fat_g": 20, "fiber_g": 5}, "kid_friendly": true, "tags": ["italian", "low-carb", "comfort-food", "healthy"]}, {"id": 31, "key": "beef-5", "name": "Mexican Beef Burrito Bowls", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Mexican_Beef_Burrito_Bowls.pdf", "prep_time": "15 min", "cook_time": "15 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb lean ground beef", "1 tbsp olive oil", "1 packet taco seasoning", "2 cups cooked rice", "1 can (15 oz) pinto beans, warmed", "1 cup corn", "1 cup shredded cheese", "Pico de gallo", "Sour cream", "Guacamole", "Shredded lettuce", "Hot sauce", "Lime wedges"], "steps": ["Heat oil in a large skillet. Cook ground beef 6-8 min, breaking up. Drain fat.", "Add taco seasoning and ¼ cup water. Simmer 3 min.", "Assemble bowls: rice, seasoned beef, beans, corn, cheese, pico, sour cream, guacamole, and lettuce.", "Serve with lime wedges and hot sauce."], "nutrition": {"calories": 580, "protein_g": 40, "carbs_g": 50, "fat_g": 24, "fiber_g": 8}, "kid_friendly": true, "tags": ["mexican", "bowl", "family-favorite", "customizable", "meal-prep"]}, {"id": 32, "key": "beef-6", "name": "Shepherd's Pie with Cauliflower Topping", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Shepherd's_Pie_with_Cauliflower_Topping.pdf", "prep_time": "25 min", "cook_time": "35 min", "difficulty": "Medium", "servings": 4, "ingredients": ["1 lb lean ground beef", "1 onion, diced", "2 carrots, diced", "2 cloves garlic, minced", "1 cup frozen peas", "1 cup beef broth", "2 tbsp tomato paste", "1 tbsp Worcestershire sauce", "1 large head cauliflower, steamed and mashed", "½ cup shredded cheddar", "2 tbsp butter", "Salt & pepper", "Fresh thyme"], "steps": ["Preheat oven to 375°F. Brown beef in an oven-safe skillet 6-8 min. Drain fat.", "Add onion and carrots, cook 5 min. Add garlic, peas, broth, tomato paste, and Worcestershire.", "Simmer 10 min until slightly thickened. Season with salt and pepper.", "Mix steamed cauliflower with butter, salt, and pepper. Spread over beef mixture.", "Top with cheddar. Bake 20-25 min until golden and bubbly.", "Garnish with fresh thyme."], "nutrition": {"calories": 420, "protein_g": 34, "carbs_g": 24, "fat_g": 22, "fiber_g": 6}, "kid_friendly": true, "tags": ["comfort-food", "british", "low-carb", "family-favorite", "casserole"]}, {"id": 33, "key": "beef-7", "name": "Beef Kofta Kebabs + Tzatziki", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Beef_Kofta_Kebabs_+_Tzatziki.pdf", "prep_time": "20 min", "cook_time": "15 min", "difficulty": "Medium", "servings": 4, "ingredients": ["1 lb ground beef", "1 small onion, grated", "3 cloves garlic, minced", "2 tbsp fresh parsley, chopped", "1 tsp cumin", "1 tsp coriander", "½ tsp cinnamon", "1 cup Greek yogurt", "½ cucumber, grated and drained", "1 tbsp lemon juice", "1 tbsp fresh dill", "Pita bread", "Lettuce, tomato, red onion for serving", "Salt & pepper"], "steps": ["Combine ground beef, onion, garlic, parsley, cumin, coriander, cinnamon, salt, and pepper. Mix well.", "Form into oval-shaped kebabs around skewers (soak wooden skewers first).", "Grill or broil 12-15 min, turning occasionally, until cooked through.", "Mix yogurt, cucumber, lemon juice, dill, salt for tzatziki.", "Serve kofta in pita with tzatziki, lettuce, tomato, and red onion."], "nutrition": {"calories": 480, "protein_g": 38, "carbs_g": 28, "fat_g": 24, "fiber_g": 3}, "kid_friendly": true, "tags": ["mediterranean", "grilled", "kebab", "fresh"]}, {"id": 34, "key": "beef-8", "name": "Chili con Carne", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Chili_con_Carne.pdf", "prep_time": "15 min", "cook_time": "40 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb lean ground beef", "1 tbsp olive oil", "1 large onion, diced", "3 cloves garlic, minced", "1 bell pepper, diced", "1 can (28 oz) diced tomatoes", "1 can (15 oz) kidney beans, drained", "1 can (15 oz) pinto beans, drained", "2 tbsp chili powder", "1 tsp cumin", "1 tsp smoked paprika", "1 cup beef broth", "Salt & pepper", "Shredded cheese, sour cream, green onions for topping"], "steps": ["Heat oil in a large pot over medium-high heat. Brown beef 6-8 min. Drain fat.", "Add onion and bell pepper. Cook 5 min. Add garlic, chili powder, cumin, and paprika. Stir 1 min.", "Add tomatoes, beans, and broth. Bring to a boil.", "Reduce heat and simmer 30-35 min, stirring occasionally.", "Season with salt and pepper. Serve with cheese, sour cream, and green onions."], "nutrition": {"calories": 460, "protein_g": 36, "carbs_g": 38, "fat_g": 18, "fiber_g": 11}, "kid_friendly": true, "tags": ["soup", "comfort-food", "batch-cook", "meal-prep", "winter", "family-favorite"]}, {"id": 35, "key": "beef-9", "name": "Cheesesteak Stuffed Peppers", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Cheesesteak_Stuffed_Peppers.pdf", "prep_time": "20 min", "cook_time": "25 min", "difficulty": "Medium", "servings": 4, "ingredients": ["6 bell peppers, tops cut off and seeded", "1 lb sirloin steak, thinly sliced", "1 large onion, sliced", "1 green bell pepper, sliced", "8 slices provolone cheese", "2 tbsp olive oil", "1 tsp garlic powder", "Salt & pepper", "Worcestershire sauce"], "steps": ["Preheat oven to 375°F. Place peppers cut-side up in a baking dish.", "Heat oil in a large skillet. Sauté onion and sliced pepper 5 min until softened.", "Add steak slices, garlic powder, and a splash of Worcestershire. Cook 4-5 min until browned.", "Divide steak mixture among peppers. Top each with a slice of provolone.", "Cover with foil. Bake 20 min. Remove foil, bake 5 more min until cheese is melted and golden."], "nutrition": {"calories": 440, "protein_g": 38, "carbs_g": 16, "fat_g": 26, "fiber_g": 4}, "kid_friendly": true, "tags": ["american", "stuffed", "comfort-food", "cheesy"]}, {"id": 36, "key": "beef-10", "name": "Beef Picadillo Rice Bowls", "category": "BEEF", "category_key": "beef", "color": "#C62828", "color_light": "#FFEBEE", "icon": "🥩", "pdf": "Recipe_Card_Beef_Picadillo_Rice_Bowls.pdf", "prep_time": "15 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb lean ground beef", "1 tbsp olive oil", "1 onion, diced", "3 cloves garlic, minced", "1 bell pepper, diced", "1 can (14 oz) diced tomatoes", "½ cup raisins", "¼ cup sliced green olives", "1 tbsp capers", "1 tsp cumin", "1 tsp oregano", "2 cups cooked rice", "Fresh cilantro", "Hot sauce", "Salt & pepper"], "steps": ["Heat oil in a large skillet. Cook beef 6-8 min, breaking up. Drain fat.", "Add onion and bell pepper. Cook 5 min. Add garlic, cumin, and oregano.", "Add tomatoes, raisins, olives, and capers. Stir well.", "Simmer 10-15 min until thickened. Season with salt and pepper.", "Serve over rice. Garnish with cilantro and hot sauce."], "nutrition": {"calories": 520, "protein_g": 36, "carbs_g": 50, "fat_g": 18, "fiber_g": 4}, "kid_friendly": true, "tags": ["mexican", "bowl", "sweet-savory", "family-favorite", "quick"]}, {"id": 37, "key": "pork-sausage-1", "name": "Pasta e Fagioli (Sausage & White Bean Soup)", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Pasta_e_Fagioli_(Sausage_&_White_Bean_Soup).pdf", "prep_time": "15 min", "cook_time": "35 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb Italian sausage (mild or hot), casings removed", "2 tbsp olive oil", "1 onion, diced", "2 carrots, diced", "2 celery stalks, diced", "4 cloves garlic, minced", "1 can (28 oz) diced tomatoes", "2 cans (15 oz) white beans, drained", "6 cups chicken broth", "1 cup small pasta (ditalini or elbow)", "2 cups fresh spinach", "Parmesan for serving", "Salt & pepper", "Crusty bread"], "steps": ["Heat oil in a large pot. Crumble sausage into pot. Cook 6-8 min until browned. Remove excess fat if needed.", "Add onion, carrot, and celery. Cook 5 min. Add garlic, cook 1 min.", "Add tomatoes, beans, and broth. Bring to a boil.", "Add pasta. Simmer 12-15 min until pasta is tender.", "Stir in spinach. Cook 2 min until wilted. Season with salt and pepper.", "Serve with grated Parmesan and crusty bread."], "nutrition": {"calories": 520, "protein_g": 34, "carbs_g": 48, "fat_g": 20, "fiber_g": 9}, "kid_friendly": true, "tags": ["italian", "soup", "comfort-food", "batch-cook", "family-favorite"]}, {"id": 38, "key": "pork-sausage-2", "name": "Honey-Garlic Pork Chops + Green Beans", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Honey-Garlic_Pork_Chops_+_Green_Beans.pdf", "prep_time": "10 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["4 bone-in pork chops (¾ inch thick)", "3 tbsp honey", "3 tbsp soy sauce", "3 cloves garlic, minced", "1 tbsp apple cider vinegar", "1 lb green beans, trimmed", "2 tbsp olive oil", "1 tbsp butter", "Sesame seeds", "Salt & pepper"], "steps": ["Season pork chops with salt and pepper. Whisk honey, soy sauce, garlic, and vinegar.", "Heat 1 tbsp oil in a large skillet over medium-high heat. Sear pork chops 4-5 min per side until golden and 145°F internal. Remove.", "Add butter and honey-soy mixture to the pan. Simmer 2 min. Return chops to pan, coat in glaze.", "Meanwhile, sauté green beans in remaining oil 5-6 min until tender-crisp. Season with salt.", "Serve pork chops over green beans. Drizzle with extra glaze. Sprinkle sesame seeds."], "nutrition": {"calories": 460, "protein_g": 40, "carbs_g": 22, "fat_g": 22, "fiber_g": 3}, "kid_friendly": true, "tags": ["quick", "stovetop", "sweet", "family-favorite", "one-pan"]}, {"id": 39, "key": "pork-sausage-3", "name": "Pork Carnitas Tacos", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Pork_Carnitas_Tacos.pdf", "prep_time": "15 min", "cook_time": "3 hrs", "difficulty": "Medium", "servings": 4, "ingredients": ["3 lbs pork shoulder, cut into large chunks", "1 tbsp olive oil", "1 orange, juiced", "1 lime, juiced", "4 cloves garlic, minced", "1 tbsp cumin", "1 tbsp chili powder", "1 tsp oregano", "12 corn tortillas", "Diced onion, cilantro, lime wedges", "Salsa verde", "Sour cream", "Salt & pepper"], "steps": ["Season pork with salt, pepper, cumin, chili powder, and oregano.", "Heat oil in a Dutch oven. Sear pork on all sides until browned, about 8 min total.", "Add garlic, orange juice, and lime juice. Add water to come halfway up the pork.", "Cover and braise at 300°F for 2.5-3 hours until fork-tender.", "Shred pork. Spread on a sheet pan and broil 5-7 min until edges are crispy.", "Serve in warm tortillas with onion, cilantro, salsa verde, sour cream, and lime."], "nutrition": {"calories": 520, "protein_g": 38, "carbs_g": 36, "fat_g": 24, "fiber_g": 4}, "kid_friendly": true, "tags": ["mexican", "slow-cook", "tender", "family-favorite", "weekend"]}, {"id": 40, "key": "pork-sausage-4", "name": "Sausage & Sheet-Pan Vegetables + Mustard Sauce", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Sausage_&_Sheet-Pan_Vegetables_+_Mustard_Sauce.pdf", "prep_time": "15 min", "cook_time": "25 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb Italian sausage links", "2 cups baby potatoes, halved", "2 cups broccoli florets", "1 red onion, wedged", "3 tbsp olive oil", "3 tbsp Dijon mustard", "2 tbsp whole grain mustard", "1 tbsp honey", "1 tbsp apple cider vinegar", "Fresh thyme", "Salt & pepper"], "steps": ["Preheat oven to 425°F. Toss potatoes and onion with 2 tbsp oil, salt, and pepper. Roast 10 min.", "Add sausages and broccoli to the pan. Drizzle with remaining oil. Roast 15-18 min.", "Whisk Dijon, whole grain mustard, honey, and vinegar for the sauce.", "Serve sausages and vegetables with mustard sauce drizzled on top. Garnish with thyme."], "nutrition": {"calories": 520, "protein_g": 30, "carbs_g": 34, "fat_g": 30, "fiber_g": 4}, "kid_friendly": true, "tags": ["sheet-pan", "one-pan", "easy-cleanup", "family-favorite"]}, {"id": 41, "key": "pork-sausage-5", "name": "Pork Fried Rice", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Pork_Fried_Rice.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb pork tenderloin, diced small", "3 tbsp soy sauce", "2 tbsp oyster sauce", "1 tbsp sesame oil", "3 cups day-old cooked rice", "2 eggs, beaten", "1 cup frozen peas and carrots", "3 green onions, sliced", "3 cloves garlic, minced", "1 tbsp vegetable oil", "White pepper"], "steps": ["Toss diced pork with 1 tbsp soy sauce. Heat vegetable oil in a wok over high heat.", "Cook pork 4-5 min until browned. Push to one side.", "Scramble eggs on the other side of the wok. Break into small pieces.", "Add rice, breaking up clumps. Stir-fry 3-4 min until heated through.", "Add peas, carrots, garlic, remaining soy sauce, oyster sauce, and sesame oil. Toss 2 min.", "Stir in green onions. Season with white pepper. Serve hot."], "nutrition": {"calories": 520, "protein_g": 36, "carbs_g": 48, "fat_g": 16, "fiber_g": 3}, "kid_friendly": true, "tags": ["asian", "stovetop", "quick", "leftover-rice", "family-favorite"]}, {"id": 42, "key": "pork-sausage-6", "name": "Italian Sausage & Pepper Hoagies", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Italian_Sausage_&_Pepper_Hoagies.pdf", "prep_time": "10 min", "cook_time": "20 min", "difficulty": "Easy", "servings": 4, "ingredients": ["6 Italian sausage links (mild)", "2 bell peppers, sliced", "1 large onion, sliced", "2 tbsp olive oil", "1 cup marinara sauce", "6 hoagie rolls", "6 slices provolone", "Italian seasoning", "Salt & pepper"], "steps": ["Grill or pan-fry sausages 12-15 min, turning occasionally, until cooked through.", "Meanwhile, heat oil in a skillet. Sauté peppers and onion 8-10 min until soft and slightly charred.", "Add marinara sauce to the peppers. Simmer 3 min. Season with Italian seasoning, salt, and pepper.", "Split hoagies, add sausage, top with pepper mixture and provolone.", "Optional: place under broiler 2 min to melt cheese."], "nutrition": {"calories": 560, "protein_g": 32, "carbs_g": 44, "fat_g": 28, "fiber_g": 4}, "kid_friendly": true, "tags": ["italian", "sandwich", "comfort-food", "family-favorite", "quick"]}, {"id": 43, "key": "pork-sausage-7", "name": "Pulled Pork Sliders + Coleslaw", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Pulled_Pork_Sliders_+_Coleslaw.pdf", "prep_time": "15 min", "cook_time": "8 hrs", "difficulty": "Medium", "servings": 4, "ingredients": ["3 lbs pork shoulder", "1 cup BBQ sauce", "1 tbsp brown sugar", "1 tsp smoked paprika", "1 tsp garlic powder", "12 slider buns", "1 bag coleslaw mix", "½ cup mayo", "2 tbsp apple cider vinegar", "1 tbsp sugar", "Pickles", "Salt & pepper"], "steps": ["Rub pork with brown sugar, paprika, garlic powder, salt, and pepper.", "Place in slow cooker. Add ½ cup BBQ sauce and ½ cup water.", "Cook on low 8 hours (or high 4-5 hours) until fork-tender.", "Shred pork. Mix with remaining BBQ sauce.", "Toss coleslaw mix with mayo, vinegar, sugar, salt, and pepper.", "Pile pulled pork on slider buns. Top with coleslaw and pickles."], "nutrition": {"calories": 480, "protein_g": 34, "carbs_g": 36, "fat_g": 22, "fiber_g": 2}, "kid_friendly": true, "tags": ["american", "slow-cook", "comfort-food", "family-favorite", "party"]}, {"id": 44, "key": "pork-sausage-8", "name": "Pork & Bok Choy Stir-Fry", "category": "PORK & SAUSAGE", "category_key": "pork-sausage", "color": "#E65100", "color_light": "#FFF3E0", "icon": "🌭", "pdf": "Recipe_Card_Pork_&_Bok_Choy_Stir-Fry.pdf", "prep_time": "15 min", "cook_time": "12 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1 lb pork tenderloin, sliced thin", "4 baby bok choy, quartered", "1 cup shiitake mushrooms, sliced", "3 tbsp soy sauce", "2 tbsp oyster sauce", "1 tbsp rice vinegar", "1 tbsp cornstarch", "1 tbsp sesame oil", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "2 cups steamed rice", "1 tbsp vegetable oil", "Sesame seeds"], "steps": ["Toss pork slices with cornstarch. Mix soy sauce, oyster sauce, rice vinegar, and sesame oil.", "Heat vegetable oil in a wok over high heat. Stir-fry pork 4-5 min until browned. Remove.", "Add bok choy and mushrooms. Stir-fry 3-4 min. Add garlic and ginger, cook 30 sec.", "Return pork to wok. Pour sauce over. Toss 1-2 min until glossy.", "Serve over rice. Sprinkle with sesame seeds."], "nutrition": {"calories": 480, "protein_g": 38, "carbs_g": 40, "fat_g": 16, "fiber_g": 3}, "kid_friendly": true, "tags": ["asian", "stovetop", "quick", "healthy", "fresh"]}, {"id": 45, "key": "vegetarian-1", "name": "Black Bean & Sweet Potato Tacos", "category": "VEGETARIAN", "category_key": "vegetarian", "color": "#4CAF50", "color_light": "#F1F8E9", "icon": "🥬", "pdf": "Recipe_Card_Black_Bean_&_Sweet_Potato_Tacos.pdf", "prep_time": "15 min", "cook_time": "25 min", "difficulty": "Easy", "servings": 4, "ingredients": ["2 medium sweet potatoes, peeled and cubed", "1 can (15 oz) black beans, drained", "1 tbsp olive oil", "1 tsp cumin", "1 tsp chili powder", "½ tsp smoked paprika", "8 small tortillas", "½ cup crumbled cotija or feta", "¼ cup fresh cilantro", "1 avocado, sliced", "Hot sauce", "Lime wedges", "Salt & pepper"], "steps": ["Preheat oven to 425°F. Toss sweet potato with oil, cumin, chili powder, paprika, salt, and pepper.", "Spread on a sheet pan. Roast 20-25 min, flipping halfway, until tender and caramelized.", "Warm black beans in a small saucepan. Lightly mash half of them.", "Warm tortillas. Fill with sweet potatoes, black beans, cheese, avocado, and cilantro.", "Serve with hot sauce and lime wedges."], "nutrition": {"calories": 420, "protein_g": 16, "carbs_g": 56, "fat_g": 16, "fiber_g": 12}, "kid_friendly": true, "tags": ["mexican", "vegetarian", "fiber-rich", "colorful", "family-favorite"]}, {"id": 46, "key": "vegetarian-2", "name": "Chickpea & Spinach Coconut Curry", "category": "VEGETARIAN", "category_key": "vegetarian", "color": "#4CAF50", "color_light": "#F1F8E9", "icon": "🥬", "pdf": "Recipe_Card_Chickpea_&_Spinach_Coconut_Curry.pdf", "prep_time": "10 min", "cook_time": "25 min", "difficulty": "Easy", "servings": 4, "ingredients": ["2 cans (15 oz) chickpeas, drained", "1 can (14 oz) coconut milk", "1 can (14 oz) diced tomatoes", "3 cups fresh spinach", "1 onion, diced", "3 cloves garlic, minced", "1 tbsp fresh ginger, grated", "2 tbsp curry powder", "1 tsp turmeric", "1 tsp cumin", "1 tbsp coconut oil", "2 cups steamed rice", "Fresh cilantro", "Naan bread (optional)", "Salt"], "steps": ["Heat coconut oil in a large pot. Sauté onion 5 min. Add garlic, ginger, curry powder, turmeric, and cumin. Stir 1 min.", "Add diced tomatoes and coconut milk. Bring to a simmer.", "Add chickpeas. Simmer 15 min until sauce thickens slightly.", "Stir in spinach. Cook 2-3 min until wilted. Season with salt.", "Serve over rice with fresh cilantro. Naan bread on the side."], "nutrition": {"calories": 480, "protein_g": 18, "carbs_g": 58, "fat_g": 20, "fiber_g": 12}, "kid_friendly": true, "tags": ["indian", "vegetarian", "vegan-option", "creamy", "comfort-food"]}, {"id": 47, "key": "vegetarian-3", "name": "Lentil Bolognese + Whole Wheat Pasta", "category": "VEGETARIAN", "category_key": "vegetarian", "color": "#4CAF50", "color_light": "#F1F8E9", "icon": "🥬", "pdf": "Recipe_Card_Lentil_Bolognese_+_Whole_Wheat_Pasta.pdf", "prep_time": "10 min", "cook_time": "35 min", "difficulty": "Easy", "servings": 4, "ingredients": ["1½ cups green or brown lentils", "2 tbsp olive oil", "1 onion, finely diced", "2 carrots, finely diced", "2 celery stalks, finely diced", "4 cloves garlic, minced", "1 can (28 oz) crushed tomatoes", "2 tbsp tomato paste", "1 tsp dried oregano", "1 tsp dried basil", "1 bay leaf", "1 lb whole wheat spaghetti", "Parmesan for serving", "Salt & pepper"], "steps": ["Cook lentils according to package directions. Drain.", "Heat oil in a large pot. Sauté onion, carrot, and celery 5 min. Add garlic, cook 1 min.", "Add tomato paste, stir 1 min. Add crushed tomatoes, cooked lentils, oregano, basil, and bay leaf.", "Simmer 20-25 min until thickened. Season with salt and pepper. Remove bay leaf.", "Cook pasta according to package. Drain. Serve sauce over pasta with Parmesan."], "nutrition": {"calories": 520, "protein_g": 28, "carbs_g": 78, "fat_g": 8, "fiber_g": 16}, "kid_friendly": true, "tags": ["italian", "vegetarian", "high-fiber", "meal-prep", "batch-cook"]}, {"id": 48, "key": "vegetarian-4", "name": "Bean & Cheese Enchilada Bake", "category": "VEGETARIAN", "category_key": "vegetarian", "color": "#4CAF50", "color_light": "#F1F8E9", "icon": "🥬", "pdf": "Recipe_Card_Bean_&_Cheese_Enchilada_Bake.pdf", "prep_time": "20 min", "cook_time": "30 min", "difficulty": "Easy", "servings": 4, "ingredients": ["2 cans (15 oz) pinto beans, drained and mashed", "2 cups shredded Mexican cheese blend", "1 can (10 oz) enchilada sauce", "12 corn tortillas", "1 cup corn kernels", "1 can (4 oz) diced green chiles", "1 tsp cumin", "Sour cream, cilantro, sliced jalapeños for topping", "Salt"], "steps": ["Preheat oven to 375°F. Mix mashed beans with corn, green chiles, cumin, and ½ cup cheese.", "Spread ¼ cup enchilada sauce on the bottom of a 9x13 baking dish.", "Fill each tortilla with bean mixture, roll up, and place seam-side down in the dish.", "Pour remaining enchilada sauce over the top. Sprinkle with remaining cheese.", "Cover with foil. Bake 20 min. Remove foil, bake 10 more min until bubbly.", "Top with sour cream, cilantro, and jalapeños."], "nutrition": {"calories": 460, "protein_g": 24, "carbs_g": 52, "fat_g": 18, "fiber_g": 10}, "kid_friendly": true, "tags": ["mexican", "vegetarian", "casserole", "comfort-food", "family-favorite"]}, {"id": 49, "key": "vegetarian-5", "name": "Tofu Pad Thai", "category": "VEGETARIAN", "category_key": "vegetarian", "color": "#4CAF50", "color_light": "#F1F8E9", "icon": "🥬", "pdf": "Recipe_Card_Tofu_Pad_Thai.pdf", "prep_time": "20 min", "cook_time": "15 min", "difficulty": "Medium", "servings": 4, "ingredients": ["14 oz extra-firm tofu, pressed and cubed", "8 oz rice noodles", "3 tbsp fish sauce (or soy sauce for vegan)", "2 tbsp tamarind paste", "2 tbsp brown sugar", "1 tbsp rice vinegar", "2 eggs, beaten", "1 cup bean sprouts", "3 green onions, sliced", "¼ cup crushed peanuts", "2 cloves garlic, minced", "2 tbsp vegetable oil", "Lime wedges", "Sriracha"], "steps": ["Soak rice noodles in hot water 10 min until pliable. Drain.", "Mix fish sauce, tamarind, sugar, and vinegar for the sauce.", "Heat oil in a wok over high heat. Fry tofu cubes 5-6 min until golden on all sides. Remove.", "Add garlic, cook 30 sec. Push to side, scramble eggs on the other side.", "Add noodles and sauce. Toss 2-3 min until noodles absorb sauce.", "Add bean sprouts and green onions. Toss 1 min. Top with crushed peanuts, lime, and sriracha."], "nutrition": {"calories": 480, "protein_g": 22, "carbs_g": 56, "fat_g": 18, "fiber_g": 3}, "kid_friendly": false, "tags": ["asian", "vegetarian", "noodles", "tangy", "fun"]}, {"id": 50, "key": "vegetarian-6", "name": "Quinoa-Stuffed Portobello Mushrooms", "category": "VEGETARIAN", "category_key": "vegetarian", "color": "#4CAF50", "color_light": "#F1F8E9", "icon": "🥬", "pdf": "Recipe_Card_Quinoa-Stuffed_Portobello_Mushrooms.pdf", "prep_time": "15 min", "cook_time": "25 min", "difficulty": "Medium", "servings": 4, "ingredients": ["4 large portobello mushroom caps", "1 cup cooked quinoa", "½ cup sun-dried tomatoes, chopped", "½ cup fresh spinach, chopped", "¼ cup pine nuts, toasted", "½ cup shredded mozzarella", "2 tbsp pesto", "2 tbsp olive oil", "2 cloves garlic, minced", "Parmesan for topping", "Fresh basil", "Balsamic glaze (optional)", "Salt & pepper"], "steps": ["Preheat oven to 375°F. Remove stems from mushrooms, scrape out gills. Brush with oil, season with salt and pepper.", "Mix quinoa, sun-dried tomatoes, spinach, pine nuts, pesto, and garlic. Season with salt and pepper.", "Fill each mushroom cap with quinoa mixture. Top with mozzarella and Parmesan.", "Place on a baking sheet. Bake 20-25 min until mushrooms are tender and cheese is golden.", "Garnish with fresh basil and a drizzle of balsamic glaze."], "nutrition": {"calories": 340, "protein_g": 18, "carbs_g": 28, "fat_g": 18, "fiber_g": 5}, "kid_friendly": true, "tags": ["vegetarian", "elegant", "healthy", "mediterranean", "gluten-free"]}];
-var DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-var currentFilter='all',currentPage=0,perPage=18;
-var mealPlan=JSON.parse(localStorage.getItem('mealPlan')||'{}');
-var checkedG=JSON.parse(localStorage.getItem('checkedG')||'{}');
-var notesData=localStorage.getItem('groceryNotes')||'';
-var currentRecipe=null,currentMultiplier=1;
-
-function scaleIngredient(text,m){
-  if(m===1)return text;
-  return text.replace(/(\d+\/\d+|\d+\.?\d*)/g,function(match){
-    if(match.indexOf('/')!==-1){var p=match.split('/');return(parseInt(p[0])*m)+'/'+parseInt(p[1])*m;}
-    var num=parseFloat(match);
-    var scaled=num*m;
-    return scaled===Math.floor(scaled)?String(Math.floor(scaled)):scaled.toFixed(1);
-  });
-}
-function toggleMultiplier(){
-  currentMultiplier=currentMultiplier===1?2:1;
-  renderIngredients();
-  var n=currentRecipe.nutrition;
-  var mult=currentMultiplier;
-  var el=document.getElementById('nutBarContainer');
-  if(el)el.innerHTML='<div class="nutrition-bar"><div class="nut-item"><span class="nut-value">'+(n.calories*mult)+'</span><span class="nut-label">Cal</span></div><div class="nut-item"><span class="nut-value">'+(n.protein_g*mult)+'g</span><span class="nut-label">Protein</span></div><div class="nut-item"><span class="nut-value">'+(n.carbs_g*mult)+'g</span><span class="nut-label">Carbs</span></div><div class="nut-item"><span class="nut-value">'+(n.fat_g*mult)+'g</span><span class="nut-label">Fat</span></div><div class="nut-item"><span class="nut-value">'+(n.fiber_g*mult)+'g</span><span class="nut-label">Fiber</span></div></div>';
-}
-function renderIngredients(){
-  if(!currentRecipe)return;
-  var ingHtml='<ul class="ing-list">'+currentRecipe.ingredients.map(function(i){return '<li>'+scaleIngredient(i,currentMultiplier)+'</li>';}).join('')+'</ul>';
-  var el=document.getElementById('ingListContainer');
-  if(el)el.innerHTML=ingHtml;
-  var servEl=document.getElementById('servingsDisplay');
-  if(servEl)servEl.textContent='Serves '+(currentRecipe.servings*currentMultiplier);
-  var btn=document.getElementById('multBtn');
-  if(btn)btn.textContent=currentMultiplier===1?'✕2 Double':'✕1 Reset';
-}
-
-function init(){
-  var cats=[];
-  DATA.forEach(function(r){if(cats.indexOf(r.category)===-1)cats.push(r.category);});
-  var bar=document.getElementById('categoryBar');
-  var allB=document.createElement('button');
-  allB.className='filter-btn active';
-  allB.setAttribute('data-cat','all');
-  allB.textContent='📋 All Recipes ('+DATA.length+')';
-  allB.style.borderColor='#10b981';
-  allB.onclick=function(){setFilter('all');};
-  bar.appendChild(allB);
-  cats.forEach(function(cat){
-    var c=DATA.find(function(r){return r.category===cat;});
-    var n=DATA.filter(function(r){return r.category===cat;}).length;
-    var b=document.createElement('button');
-    b.className='filter-btn';
-    b.setAttribute('data-cat',cat);
-    b.textContent=c.icon+' '+cat+' ('+n+')';
-    b.onclick=function(){setFilter(cat);};
-    bar.appendChild(b);
-  });
-  renderStats();
-  renderRecipes();
-}
-
-function renderStats(){
-  var cats=[];
-  DATA.forEach(function(r){if(cats.indexOf(r.category)===-1)cats.push(r.category);});
-  var s=document.getElementById('statsBar');
-  s.innerHTML='<div class="stat-chip">📊 <strong>'+DATA.length+'</strong> recipes</div>';
-  cats.forEach(function(cat){
-    var c=DATA.find(function(r){return r.category===cat;});
-    var n=DATA.filter(function(r){return r.category===cat;}).length;
-    s.innerHTML+='<div class="stat-chip" style="border-left:3px solid '+c.color+'">'+c.icon+' <strong>'+n+'</strong> '+cat+'</div>';
-  });
-}
-
-function switchPage(n){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
-  document.getElementById('page-'+n).classList.add('active');
-  document.getElementById('tab-'+n).classList.add('active');
-  if(n==='grocery')renderGrocery();
-  if(n==='planner')renderPlanner();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function setFilter(c){
-  currentFilter=c;
-  currentPage=0;
-  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-  var btn=document.querySelector('.filter-btn[data-cat="'+c+'"]');
-  if(btn)btn.classList.add('active');
-  renderRecipes();
-}
-
-function getFiltered(){
-  var q=document.getElementById('searchInput').value.toLowerCase().trim();
-  return DATA.filter(function(r){
-    if(currentFilter!=='all'&&r.category!==currentFilter)return false;
-    if(q&&r.name.toLowerCase().indexOf(q)===-1&&r.category.toLowerCase().indexOf(q)===-1)return false;
-    return true;
-  });
-}
-
-function renderRecipes(){
-  var f=getFiltered();
-  var g=document.getElementById('recipeGrid');
-  var nr=document.getElementById('noResults');
-  var pg=document.getElementById('pagination');
-  if(!f.length){g.innerHTML='';nr.style.display='block';pg.innerHTML='';return;}
-  nr.style.display='none';
-  var tp=Math.ceil(f.length/perPage);
-  if(currentPage>=tp)currentPage=tp-1;
-  if(currentPage<0)currentPage=0;
-  var s=currentPage*perPage;
-  var items=f.slice(s,s+perPage);
-  g.innerHTML='';
-  items.forEach(function(r){
-    var d=document.createElement('div');
-    d.className='recipe-card';
-    d.style.borderTop='3px solid '+r.color;
-    d.onclick=function(){openRecipe(r.id);};
-    var top=document.createElement('div');
-    top.className='card-top';
-    var icon=document.createElement('span');
-    icon.className='card-icon';
-    icon.textContent=r.icon;
-    var num=document.createElement('span');
-    num.className='card-number';
-    num.textContent='#'+String(r.id).padStart(2,'0');
-    top.appendChild(icon);
-    top.appendChild(num);
-    d.appendChild(top);
-    var photo=document.createElement('img');
-    photo.className='card-photo';
-    photo.src='images/'+r.id+'.png';
-    photo.alt=r.name;
-    photo.loading='lazy';
-    photo.onerror=function(){this.style.display='none';};
-    photo.onclick=function(e){e.stopPropagation();openLightbox('images/'+r.id+'.png');};
-    d.appendChild(photo);
-    var name=document.createElement('div');
-    name.className='card-name';
-    name.style.marginTop='4px';
-    name.textContent=r.name;
-    name.onclick=function(){openRecipe(r.id);};
-    d.appendChild(name);
-    var tags=document.createElement('div');
-    tags.className='card-tags';
-    var timeChip=document.createElement('span');
-    timeChip.className='chip chip-time';
-    timeChip.textContent='⏱ '+r.prep_time+' + '+r.cook_time;
-    tags.appendChild(timeChip);
-    d.appendChild(tags);
-    if(r.kid_friendly){
-      var k=document.createElement('div');
-      k.className='card-kid';
-      k.innerHTML='👶 <span>Kid-friendly</span>';
-      d.appendChild(k);
-    }
-    g.appendChild(d);
-  });
-  if(tp>1){
-    pg.innerHTML='';
-    for(var i=0;i<tp;i++){
-      (function(idx){
-        var b=document.createElement('button');
-        b.className='pg-btn'+(idx===currentPage?' active':'');
-        b.textContent=idx+1;
-        b.onclick=function(){goPage(idx);};
-        pg.appendChild(b);
-      })(i);
-    }
-  } else {
-    pg.innerHTML='';
-  }
-}
-
-function goPage(p){currentPage=p;renderRecipes();window.scrollTo({top:320,behavior:'smooth'});}
-
-function openRecipe(id){
-  var r=DATA.find(function(x){return x.id===id;});
-  if(!r)return;
-  currentRecipe=r;currentMultiplier=1;
-  document.getElementById('overlayBanner').style.background='linear-gradient(90deg,'+r.color+','+r.color_light+')';
-  var n=r.nutrition;
-  var dayOpts=DAYS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('');
-  var kidBadge=r.kid_friendly?' <span style="font-size:.75rem;color:var(\'--accent-light\')">Kid-friendly</span>':'';
-  var photoHtml='<img class="overlay-photo" src="images/'+r.id+'.png" alt="'+r.name+'" onerror="this.style.display=\'none\'" onclick="openLightbox(\'images/'+r.id+'.png\')">';
-  var catHtml='<div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px;flex-wrap:wrap"><span class="cat-badge" style="background:'+r.color+'">'+r.category+'</span><span class="chip chip-diff">'+r.difficulty+'</span><span class="chip chip-time" style="text-transform:none">'+r.prep_time+' + '+r.cook_time+'</span></div>';
-  var nameHtml='<h2>'+r.name+'</h2><div id="servingsDisplay" style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px">Serves '+r.servings+kidBadge+'</div>';
-  var nutHtml='<div id="nutBarContainer"><div class="nutrition-bar">'+
-    '<div class="nut-item"><span class="nut-value">'+n.calories+'</span><span class="nut-label">Cal</span></div>'+
-    '<div class="nut-item"><span class="nut-value">'+n.protein_g+'g</span><span class="nut-label">Protein</span></div>'+
-    '<div class="nut-item"><span class="nut-value">'+n.carbs_g+'g</span><span class="nut-label">Carbs</span></div>'+
-    '<div class="nut-item"><span class="nut-value">'+n.fat_g+'g</span><span class="nut-label">Fat</span></div>'+
-    '<div class="nut-item"><span class="nut-value">'+n.fiber_g+'g</span><span class="nut-label">Fiber</span></div>'+
-  '</div></div>';
-  var ingHtml='<div style="margin-bottom:24px"><div class="section-title">Ingredients</div><div id="ingListContainer"><ul class="ing-list">'+r.ingredients.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div></div>';
-  var stepHtml='<div style="margin-bottom:24px"><div class="section-title">Instructions</div><ol class="step-list">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></div>';
-  var actionHtml='<div class="detail-actions"><button class="btn-mult" id="multBtn" onclick="toggleMultiplier()">2x Double</button><select class="plan-day-select" id="planDaySelect">'+dayOpts+'</select><button class="btn btn-primary" onclick="addToPlan('+r.id+')">Add to Day</button><button class="btn btn-ghost" onclick="closeOverlay()">Close</button></div>';
-  document.getElementById('overlayBody').innerHTML=photoHtml+catHtml+nameHtml+nutHtml+ingHtml+stepHtml+actionHtml;
-  document.getElementById('recipeOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeOverlay(){
-  document.getElementById('recipeOverlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-
-function openLightbox(src){document.getElementById('lightboxImg').src=src;document.getElementById('photoLightbox').classList.add('open');document.body.style.overflow='hidden';}
-function closeLightbox(){document.getElementById('photoLightbox').classList.remove('open');document.body.style.overflow='';document.getElementById('lightboxImg').src='';}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOverlay();closeLightbox();}});
-
-function addToPlan(id){
-  var r=DATA.find(function(x){return x.id===id;});
-  var day=document.getElementById('planDaySelect').value;
-  mealPlan[day]=id;
-  localStorage.setItem('mealPlan',JSON.stringify(mealPlan));
-  showToast(r.name+' → '+day);
-  closeOverlay();
-  renderPlanner();
-}
-
-function removeFromPlan(day){
-  delete mealPlan[day];
-  localStorage.setItem('mealPlan',JSON.stringify(mealPlan));
-  renderPlanner();
-  showToast('Removed from '+day);
-}
-
-function clearPlan(){
-  if(!confirm('Clear entire plan?'))return;
-  mealPlan={};
-  localStorage.setItem('mealPlan',JSON.stringify(mealPlan));
-  renderPlanner();
-  showToast('Plan cleared');
-}
-
-function renderPlanner(){
-  var g=document.getElementById('plannerGrid');
-  g.innerHTML='';
-  DAYS.forEach(function(day){
-    var rid=mealPlan[day];
-    var r=rid?DATA.find(function(x){return x.id===rid;}):null;
-    var d=document.createElement('div');
-    d.className='planner-day';
-    var h4=document.createElement('h4');
-    h4.textContent=day;
-    d.appendChild(h4);
-    if(r){
-      var wrap=document.createElement('div');
-      wrap.style.cssText='font-size:.75rem;margin-bottom:6px';
-      var tag=document.createElement('span');
-      tag.style.cssText='display:inline-block;padding:2px 8px;border-radius:6px;color:#fff;font-weight:700;font-size:.65rem;background:'+r.color;
-      tag.textContent=r.icon+' '+r.category;
-      wrap.appendChild(tag);
-      d.appendChild(wrap);
-      var an=document.createElement('div');
-      an.className='assigned';
-      an.textContent=r.name;
-      an.onclick=function(){openRecipe(r.id);};
-      d.appendChild(an);
-      var rm=document.createElement('button');
-      rm.className='remove-btn';
-      rm.textContent='✕ Remove';
-      rm.onclick=function(){removeFromPlan(day);};
-      d.appendChild(rm);
-    } else {
-      var em=document.createElement('div');
-      em.className='planner-empty';
-      em.textContent='Tap a recipe to assign →';
-      d.appendChild(em);
-    }
-    g.appendChild(d);
-  });
-}
-
-function renderGrocery(){
-  var content=document.getElementById('groceryContent');
-  var assigned=DAYS.filter(function(d){return mealPlan[d];});
-  if(!assigned.length){
-    content.innerHTML='<div class="empty-state"><div class="emoji">📅</div><p>No meals planned yet.<br>Go to <strong>📅 Meal Plan</strong> to assign recipes first!</p></div>';
-    return;
-  }
-  var byCat={};
-  assigned.forEach(function(day){
-    var r=DATA.find(function(x){return x.id===mealPlan[day];});
-    if(!r)return;
-    if(!byCat[r.category])byCat[r.category]=[];
-    byCat[r.category].push({name:r.name,icon:r.icon,color:r.color,day:day,ingredients:r.ingredients});
-  });
-  var catOrder=['CHICKEN','TURKEY','SALMON & FISH','BEEF','PORK & SAUSAGE','VEGETARIAN'];
-  var h='<p style="margin-bottom:16px;color:var(--text-dim);font-size:.85rem">🛒 '+assigned.length+' meals planned — ingredients grouped by category</p>';
-  catOrder.forEach(function(cat){
-    if(!byCat[cat])return;
-    var items=byCat[cat];
-    var color=items[0].color;
-    h+='<div class="grocery-section"><h3><span class="cat-badge" style="background:'+color+'">'+items[0].icon+' '+cat+'</span><span style="font-size:.75rem;color:var(--text-dim);font-weight:400;margin-left:8px">— '+items.length+' meal(s)</span></h3><div class="grocery-items">';
-    var seen={};
-    items.forEach(function(item){
-      item.ingredients.forEach(function(ing){
-        var key=ing.toLowerCase();
-        if(seen[key])return;
-        seen[key]=1;
-        var gid=cat.replace(/[^a-zA-Z0-9]/g,'_')+'_'+ing.substring(0,30).replace(/[^a-zA-Z0-9]/g,'_');
-        var ck=checkedG[gid]?' checked':'';
-        var cls=checkedG[gid]?'grocery-item checked':'grocery-item';
-        h+='<div class="'+cls+'"><input type="checkbox"'+ck+' data-gid="'+gid+'" onclick="toggleG(this)"><label>'+ing+'</label></div>';
-      });
-    });
-    h+='</div></div>';
-  });
-  h+='<div class="grocery-section" style="border:1.5px dashed var(--border)"><h3>✏️ Extra Items / Notes</h3><textarea class="notes-area" id="groceryNotes" placeholder="Pantry staples, snacks, drinks…">'+notesData+'</textarea><button class="action-btn" style="margin-top:10px" onclick="saveNotes()">💾 Save Notes</button></div>';
-  content.innerHTML=h;
-}
-
-function toggleG(el){
-  var gid=el.getAttribute('data-gid');
-  if(checkedG[gid])delete checkedG[gid];else checkedG[gid]=1;
-  localStorage.setItem('checkedG',JSON.stringify(checkedG));
-  if(el&&el.parentNode)el.parentNode.classList.toggle('checked',!!checkedG[gid]);
-}
-
-function resetChecks(){
-  checkedG={};
-  localStorage.removeItem('checkedG');
-  renderGrocery();
-  showToast('All checks reset');
-}
-
-function saveNotes(){
-  notesData=document.getElementById('groceryNotes').value;
-  localStorage.setItem('groceryNotes',notesData);
-  showToast('Notes saved 💾');
-}
-
-function showToast(msg){
-  var t=document.getElementById('toast');
-  t.textContent='✅ '+msg;
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2800);
-}
-
-init();
-</script>
+    <header>
+        <h1>🍳 High Protein Recipe Collection</h1>
+        <p>88 delicious high-protein recipes</p>
+    </header>
+    <div class="container">
+        <section class="category-section">
+        <h2><span class="cat-badge" style="background:#388E3C">🍗 CHICKEN</span></h2>
+        <div class="recipe-grid"><a href="#chicken-1" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/1.png" alt="Lemon-Herb Chicken Thighs + Broccoli & Couscous" loading="lazy">
+                    <div class="card-info">
+                        <h3>Lemon-Herb Chicken Thighs + Broccoli & Couscous</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-2" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/2.png" alt="Chicken Stir-Fry with Snap Peas & Brown Rice" loading="lazy">
+                    <div class="card-info">
+                        <h3>Chicken Stir-Fry with Snap Peas & Brown Rice</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-3" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/3.png" alt="Greek Yogurt Chicken Skewers + Greek Salad" loading="lazy">
+                    <div class="card-info">
+                        <h3>Greek Yogurt Chicken Skewers + Greek Salad</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-4" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/4.png" alt="Honey-Garlic Chicken & Veggie Sheet Pan" loading="lazy">
+                    <div class="card-info">
+                        <h3>Honey-Garlic Chicken & Veggie Sheet Pan</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-5" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/5.png" alt="Chicken Fajita Bowls" loading="lazy">
+                    <div class="card-info">
+                        <h3>Chicken Fajita Bowls</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-6" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/6.png" alt="Teriyaki Chicken Rice Bowls" loading="lazy">
+                    <div class="card-info">
+                        <h3>Teriyaki Chicken Rice Bowls</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-7" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/7.png" alt="Chicken Parmesan with Zucchini Noodles" loading="lazy">
+                    <div class="card-info">
+                        <h3>Chicken Parmesan with Zucchini Noodles</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-8" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/8.png" alt="Thai Peanut Chicken Lettuce Wraps" loading="lazy">
+                    <div class="card-info">
+                        <h3>Thai Peanut Chicken Lettuce Wraps</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-9" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/9.png" alt="Chicken Burrito Bowls" loading="lazy">
+                    <div class="card-info">
+                        <h3>Chicken Burrito Bowls</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-10" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/10.png" alt="Chicken & White Bean Soup with Kale" loading="lazy">
+                    <div class="card-info">
+                        <h3>Chicken & White Bean Soup with Kale</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-11" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/11.png" alt="Creamy Tuscan Chicken + Sun-Dried Tomatoes" loading="lazy">
+                    <div class="card-info">
+                        <h3>Creamy Tuscan Chicken + Sun-Dried Tomatoes</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-12" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/12.png" alt="Mediterranean Chicken Thighs + Olives" loading="lazy">
+                    <div class="card-info">
+                        <h3>Mediterranean Chicken Thighs + Olives</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-13" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/52.png" alt="Tastiest Low Calorie High Protein Spicy Grilled Chicken W..." loading="lazy">
+                    <div class="card-info">
+                        <h3>Tastiest Low Calorie High Protein Spicy Grilled Chicken W...</h3>
+                        <div class="card-macros"><span>347 cal</span><span>38g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-14" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/54.png" alt="There's NO REASON to be Eating Plain Chicken & Rice for W..." loading="lazy">
+                    <div class="card-info">
+                        <h3>There's NO REASON to be Eating Plain Chicken & Rice for W...</h3>
+                        <div class="card-macros"><span>450 cal</span><span>45g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-15" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/55.png" alt="Honey Garlic Butter Chicken Mac & Cheese #food #fitness" loading="lazy">
+                    <div class="card-info">
+                        <h3>Honey Garlic Butter Chicken Mac & Cheese #food #fitness</h3>
+                        <div class="card-macros"><span>597 cal</span><span>59g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-16" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/57.png" alt="MOST DELICIOUS High Protein Creamy Garlic Cheesy Chicken ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>MOST DELICIOUS High Protein Creamy Garlic Cheesy Chicken ...</h3>
+                        <div class="card-macros"><span>502 cal</span><span>53g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-17" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/58.png" alt="TASTIEST Crispy Cheesy Chicken Tacos  ONLY 280 Cals 25g P..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST Crispy Cheesy Chicken Tacos  ONLY 280 Cals 25g P...</h3>
+                        <div class="card-macros"><span>281 cal</span><span>25g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-18" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/59.png" alt="STOP EATING Plain Chicken & Rice! Try this High Protein H..." loading="lazy">
+                    <div class="card-info">
+                        <h3>STOP EATING Plain Chicken & Rice! Try this High Protein H...</h3>
+                        <div class="card-macros"><span>430 cal</span><span>41g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-19" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/60.png" alt="Grilled Chicken Alfredo Pasta Meal Prep #fitness #recipe" loading="lazy">
+                    <div class="card-info">
+                        <h3>Grilled Chicken Alfredo Pasta Meal Prep #fitness #recipe</h3>
+                        <div class="card-macros"><span>595 cal</span><span>59g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-20" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/61.png" alt="TASTIEST crispy garlic parmesan chicken wraps ONLY 420 ca..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST crispy garlic parmesan chicken wraps ONLY 420 ca...</h3>
+                        <div class="card-macros"><span>420 cal</span><span>41g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-21" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/63.png" alt="MOST DELICIOUS High Protein Crispy Salt n Pepper Chicken ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>MOST DELICIOUS High Protein Crispy Salt n Pepper Chicken ...</h3>
+                        <div class="card-macros"><span>436 cal</span><span>40g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-22" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/64.png" alt="Most Delicious High Protein Sticky Korean Fried Chicken! ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>Most Delicious High Protein Sticky Korean Fried Chicken! ...</h3>
+                        <div class="card-macros"><span>452 cal</span><span>40g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-23" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/65.png" alt="Easy & Healthy Chicken Fried Rice! High Protein Meal #fri..." loading="lazy">
+                    <div class="card-info">
+                        <h3>Easy & Healthy Chicken Fried Rice! High Protein Meal #fri...</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#chicken-24" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/67.png" alt="TASTIEST High Protein Crispy Salt n Pepper Chicken & Chip..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST High Protein Crispy Salt n Pepper Chicken & Chip...</h3>
+                        <div class="card-macros"><span>436 cal</span><span>40g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-25" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/68.png" alt="High Protein BBQ Chicken Mac & Cheese Meal Prep! ONLY 500..." loading="lazy">
+                    <div class="card-info">
+                        <h3>High Protein BBQ Chicken Mac & Cheese Meal Prep! ONLY 500...</h3>
+                        <div class="card-macros"><span>511 cal</span><span>50g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-26" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/69.png" alt="High Protein Crispy Chicken Wraps" loading="lazy">
+                    <div class="card-info">
+                        <h3>High Protein Crispy Chicken Wraps</h3>
+                        <div class="card-macros"><span>400 cal</span><span>42g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-27" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/70.png" alt="High Protein Meal Prep Honey Lemon Chicken" loading="lazy">
+                    <div class="card-info">
+                        <h3>High Protein Meal Prep Honey Lemon Chicken</h3>
+                        <div class="card-macros"><span>415 cal</span><span>40g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-28" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/71.png" alt="MOST DELICIOUS High Protein Chicken Shawarma Rice Bowls! ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>MOST DELICIOUS High Protein Chicken Shawarma Rice Bowls! ...</h3>
+                        <div class="card-macros"><span>488 cal</span><span>45g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-29" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/73.png" alt="NO REASON to eat plain chicken & rice! Try this honey gar..." loading="lazy">
+                    <div class="card-info">
+                        <h3>NO REASON to eat plain chicken & rice! Try this honey gar...</h3>
+                        <div class="card-macros"><span>550 cal</span><span>42g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-30" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/74.png" alt="MOST DELICIOUS High protein Honey Chipotle Chicken Mac & ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>MOST DELICIOUS High protein Honey Chipotle Chicken Mac & ...</h3>
+                        <div class="card-macros"><span>651 cal</span><span>60g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-31" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/75.png" alt="Bang Bang Chicken Rice Bowls For Weight Loss" loading="lazy">
+                    <div class="card-info">
+                        <h3>Bang Bang Chicken Rice Bowls For Weight Loss</h3>
+                        <div class="card-macros"><span>595 cal</span><span>46g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-32" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/76.png" alt="STOP EATING Plain Chicken & Rice! Try this High Protein C..." loading="lazy">
+                    <div class="card-info">
+                        <h3>STOP EATING Plain Chicken & Rice! Try this High Protein C...</h3>
+                        <div class="card-macros"><span>401 cal</span><span>39g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-33" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/77.png" alt="TASTIEST High Protein Chicken Fajita Wraps! ONLY 380 CALS..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST High Protein Chicken Fajita Wraps! ONLY 380 CALS...</h3>
+                        <div class="card-macros"><span>384 cal</span><span>40g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-34" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/78.png" alt="MOST DELICIOUS Korean BBQ Chicken Wraps 417 Calories | 39..." loading="lazy">
+                    <div class="card-info">
+                        <h3>MOST DELICIOUS Korean BBQ Chicken Wraps 417 Calories | 39...</h3>
+                        <div class="card-macros"><span>417 cal</span><span>39g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-35" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/79.png" alt="TASTIEST Cheesy Chicken Fajita Wraps ONLY 390 Cals 43g Pr..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST Cheesy Chicken Fajita Wraps ONLY 390 Cals 43g Pr...</h3>
+                        <div class="card-macros"><span>394 cal</span><span>43g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-36" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/81.png" alt="TASTIEST caramelized onion chicken pasta ONLY 630 calorie..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST caramelized onion chicken pasta ONLY 630 calorie...</h3>
+                        <div class="card-macros"><span>630 cal</span><span>58g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-37" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/82.png" alt="Most DELICIOUS chicken shawarma rice bowls ONLY 552 calories" loading="lazy">
+                    <div class="card-info">
+                        <h3>Most DELICIOUS chicken shawarma rice bowls ONLY 552 calories</h3>
+                        <div class="card-macros"><span>552 cal</span><span>46g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-38" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/83.png" alt="Caramelized Onion Creamy Chicken #food" loading="lazy">
+                    <div class="card-info">
+                        <h3>Caramelized Onion Creamy Chicken #food</h3>
+                        <div class="card-macros"><span>609 cal</span><span>56g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-39" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/85.png" alt="MOST DELICIOUS High Protein Crispy Garlic Chicken Fried Rice" loading="lazy">
+                    <div class="card-info">
+                        <h3>MOST DELICIOUS High Protein Crispy Garlic Chicken Fried Rice</h3>
+                        <div class="card-macros"><span>590 cal</span><span>48g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-40" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/87.png" alt="NO REASON For Boring Meals! Try These Orange Chicken Rice..." loading="lazy">
+                    <div class="card-info">
+                        <h3>NO REASON For Boring Meals! Try These Orange Chicken Rice...</h3>
+                        <div class="card-macros"><span>542 cal</span><span>46g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#chicken-41" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/88.png" alt="High Protein Lemon Pepper Chicken Wraps" loading="lazy">
+                    <div class="card-info">
+                        <h3>High Protein Lemon Pepper Chicken Wraps</h3>
+                        <div class="card-macros"><span>409 cal</span><span>41g protein</span></div>
+                    </div>
+                </div>
+            </a></div>
+    </section><section class="category-section">
+        <h2><span class="cat-badge" style="background:#C62828">🥩 BEEF</span></h2>
+        <div class="recipe-grid"><a href="#beef-1" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/27.png" alt="Beef & Black Bean Stuffed Peppers" loading="lazy">
+                    <div class="card-info">
+                        <h3>Beef & Black Bean Stuffed Peppers</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-2" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/28.png" alt="Korean Beef Rice Bowls" loading="lazy">
+                    <div class="card-info">
+                        <h3>Korean Beef Rice Bowls</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-3" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/29.png" alt="Beef & Broccoli Stir-Fry" loading="lazy">
+                    <div class="card-info">
+                        <h3>Beef & Broccoli Stir-Fry</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-4" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/30.png" alt="Zucchini Noodle Bolognese" loading="lazy">
+                    <div class="card-info">
+                        <h3>Zucchini Noodle Bolognese</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-5" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/31.png" alt="Mexican Beef Burrito Bowls" loading="lazy">
+                    <div class="card-info">
+                        <h3>Mexican Beef Burrito Bowls</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-6" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/32.png" alt="Shepherd's Pie with Cauliflower Topping" loading="lazy">
+                    <div class="card-info">
+                        <h3>Shepherd's Pie with Cauliflower Topping</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-7" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/33.png" alt="Beef Kofta Kebabs + Tzatziki" loading="lazy">
+                    <div class="card-info">
+                        <h3>Beef Kofta Kebabs + Tzatziki</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-8" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/34.png" alt="Chili con Carne" loading="lazy">
+                    <div class="card-info">
+                        <h3>Chili con Carne</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-9" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/35.png" alt="Cheesesteak Stuffed Peppers" loading="lazy">
+                    <div class="card-info">
+                        <h3>Cheesesteak Stuffed Peppers</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-10" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/36.png" alt="Beef Picadillo Rice Bowls" loading="lazy">
+                    <div class="card-info">
+                        <h3>Beef Picadillo Rice Bowls</h3>
+                        
+                    </div>
+                </div>
+            </a><a href="#beef-11" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/53.png" alt="Garlic Parmesan Steak Alfredo Pasta Meal Prep #recipe" loading="lazy">
+                    <div class="card-info">
+                        <h3>Garlic Parmesan Steak Alfredo Pasta Meal Prep #recipe</h3>
+                        <div class="card-macros"><span>595 cal</span><span>65g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-12" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/56.png" alt="TASTIEST High Protein Garlic Butter Steak Bites & Cajun M..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST High Protein Garlic Butter Steak Bites & Cajun M...</h3>
+                        <div class="card-macros"><span>550 cal</span><span>62g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-13" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/62.png" alt="Buttery Garlic Steak & Eggs!  #recipe #mealprep" loading="lazy">
+                    <div class="card-info">
+                        <h3>Buttery Garlic Steak & Eggs!  #recipe #mealprep</h3>
+                        <div class="card-macros"><span>622 cal</span><span>64g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-14" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/66.png" alt="TASTIEST High Protein Buttery Garlic Steak & Eggs! Only 6..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST High Protein Buttery Garlic Steak & Eggs! Only 6...</h3>
+                        <div class="card-macros"><span>622 cal</span><span>64g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-15" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/72.png" alt="TASTIEST crispy cheesy beef tacos! ONLY 294 calories" loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST crispy cheesy beef tacos! ONLY 294 calories</h3>
+                        <div class="card-macros"><span>294 cal</span><span>28g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-16" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/80.png" alt="TASTIEST High Protein Garlic Butter Steak Bites & Crispy ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>TASTIEST High Protein Garlic Butter Steak Bites & Crispy ...</h3>
+                        <div class="card-macros"><span>480 cal</span><span>50g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-17" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/84.png" alt="High Protein Meal Prep Creamy Garlic Beef Pasta! Only 477..." loading="lazy">
+                    <div class="card-info">
+                        <h3>High Protein Meal Prep Creamy Garlic Beef Pasta! Only 477...</h3>
+                        <div class="card-macros"><span>477 cal</span><span>47g protein</span></div>
+                    </div>
+                </div>
+            </a><a href="#beef-18" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/86.png" alt="Easiest Most Delicious High Protein Korean Beef Rice Bowl..." loading="lazy">
+                    <div class="card-info">
+                        <h3>Easiest Most Delicious High Protein Korean Beef Rice Bowl...</h3>
+                        <div class="card-macros"><span>484 cal</span><span>50g protein</span></div>
+                    </div>
+                </div>
+            </a></div>
+    </section><section class="category-section">
+        <h2><span class="cat-badge" style="background:#546E7A">🍽️ OTHER</span></h2>
+        <div class="recipe-grid"><a href="#other-1" class="recipe-card-link">
+                <div class="recipe-card">
+                    <img class="recipe-thumb" src="images/51.png" alt="STOP EATING Bland & Boring Food! Make High Protein & Low ..." loading="lazy">
+                    <div class="card-info">
+                        <h3>STOP EATING Bland & Boring Food! Make High Protein & Low ...</h3>
+                        
+                    </div>
+                </div>
+            </a></div>
+    </section>
+    </div>
 </body>
 </html>
