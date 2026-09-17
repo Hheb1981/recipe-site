@@ -148,7 +148,202 @@ main{max-width:1280px;margin:0 auto;padding:28px 24px}
 <div id="groceryContent"></div>
 </div>
 <div id="page-suggestion" class="page">
-<p style="text-align: center; padding: 50px; font-size: 1.5em; color: var(--text-dim);">💡 Suggestions Coming Soon!</p>
+<style>
+.sugg-intro{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:22px;font-size:.86rem;color:var(--text-dim)}
+.sugg-intro strong{color:var(--accent-light)}
+.sugg-budget{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.sugg-budget span{background:var(--chip-bg);border:1px solid var(--border);border-radius:24px;padding:7px 16px;font-size:.78rem;font-weight:700;color:var(--text)}
+.sugg-budget span b{color:var(--accent-light)}
+.sugg-day{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}
+.sugg-day-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg-elevated);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.sugg-day-head .sugg-icon{font-size:1.5rem}
+.sugg-day-head h3{font-size:1.05rem;color:var(--text-bright);flex:1;min-width:200px}
+.sugg-tag{background:var(--chip-bg);border-radius:20px;padding:4px 12px;font-size:.7rem;font-weight:700;color:var(--accent-light);letter-spacing:.4px}
+.sugg-day-body{padding:16px 18px}
+.sugg-day-body p{font-size:.85rem;color:var(--text-dim);margin-bottom:12px}
+.sugg-rec{margin-top:6px}
+.sugg-rec h4{font-size:.8rem;color:var(--accent-light);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 8px}
+.sugg-rec ul,.sugg-rec ol{padding-left:20px;font-size:.83rem;color:var(--text)}
+.sugg-rec li{margin-bottom:5px;line-height:1.45}
+.sugg-rec ul{list-style:disc}.sugg-rec ol{list-style:decimal}
+.sugg-store{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.sugg-store-head{padding:12px 18px;background:var(--bg-elevated);border-bottom:1px solid var(--border);font-weight:800;font-size:.9rem;color:var(--accent-light);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.sugg-store-head em{font-style:normal;font-size:.72rem;color:var(--text-dim);font-weight:600}
+.sugg-store ul{padding:14px 18px 14px 38px;font-size:.84rem;color:var(--text);list-style:disc}
+.sugg-store li{margin-bottom:6px}
+.sugg-total{background:linear-gradient(135deg,var(--accent),var(--accent-light));color:#fff;border-radius:var(--radius);padding:16px 20px;font-weight:800;font-size:.92rem;margin-bottom:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.sugg-h2{font-size:1.15rem;color:var(--text-bright);margin:26px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--accent)}
+</style>
+<div class="sugg-intro">
+<strong>⚠️ Simulated flyer specials.</strong> Live flyer data (Flipp / store sites) was not accessible during generation, so prices are <strong>simulated estimates</strong> for comparison against real weekly specials. Budget target: <strong>$100 CAD</strong> · 4 dinners · 2 people · Laval (H2B2P3).
+</div>
+<div class="sugg-budget">
+<span>💰 Budget <b>$100</b></span>
+<span>🍽️ 4 dinners · 2 people</span>
+<span>🧾 Est. food cost <b>$55–68</b></span>
+<span>🏪 5 stores</span>
+</div>
+
+<h2 class="sugg-h2">📅 4-Day Meal Plan — One different protein each night</h2>
+
+<div class="sugg-day">
+<div class="sugg-day-head"><span class="sugg-icon">🐔</span><h3>Day 1 — Chicken &amp; Veggie Stir-Fry over Rice</h3><span class="sugg-tag">CHICKEN</span><span class="sugg-tag">~$12–15</span></div>
+<div class="sugg-day-body">
+<p>Quick, healthy stir-fry using chicken, broccoli, carrots, onions and bell peppers, served over rice.</p>
+<div class="sugg-rec">
+<h4>Ingredients</h4>
+<ul>
+<li>1.5 lbs boneless skinless chicken breasts, sliced into strips</li>
+<li>2 heads broccoli, cut into florets</li>
+<li>2 bell peppers, sliced</li>
+<li>1 onion, sliced</li>
+<li>2 carrots, julienned</li>
+<li>1 bag frozen mixed vegetables (optional)</li>
+<li>2 cups cooked rice</li>
+<li>Pantry: soy sauce, ginger, minced garlic, sesame oil, cooking oil</li>
+</ul>
+<h4>Instructions</h4>
+<ol>
+<li>Heat oil in a wok over medium-high heat. Cook chicken until browned and cooked through; remove.</li>
+<li>Add broccoli, carrots, onion and peppers; stir-fry until tender-crisp.</li>
+<li>Return chicken to the pan. Add soy sauce, ginger and garlic; toss to coat.</li>
+<li>Serve hot over rice. Drizzle with sesame oil if desired.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div class="sugg-day">
+<div class="sugg-day-head"><span class="sugg-icon">🥩</span><h3>Day 2 — Lean Ground Beef Pasta with Tomato Sauce &amp; Side Salad</h3><span class="sugg-tag">BEEF</span><span class="sugg-tag">~$10–13</span></div>
+<div class="sugg-day-body">
+<p>Classic spaghetti with a rich tomato and lean ground beef sauce, plus a fresh side salad.</p>
+<div class="sugg-rec">
+<h4>Ingredients</h4>
+<ul>
+<li>1.5 lbs lean ground beef</li>
+<li>1 onion, chopped</li>
+<li>2 cans (14.5 oz) diced tomatoes</li>
+<li>500 g spaghetti</li>
+<li>1 head lettuce, torn · 1 cucumber, sliced · 1–2 tomatoes, chopped</li>
+<li>Pantry: olive oil, minced garlic, Italian seasoning, salt, pepper, vinegar</li>
+</ul>
+<h4>Instructions</h4>
+<ol>
+<li>Cook spaghetti according to package directions.</li>
+<li>Heat olive oil in a large pot; soften onion. Add beef and brown, breaking it up; drain fat.</li>
+<li>Stir in garlic, Italian seasoning, salt and pepper; cook 1 minute.</li>
+<li>Add diced tomatoes with their juice. Simmer covered 15–20 minutes, stirring occasionally.</li>
+<li>Toss lettuce, cucumber and tomato for a side salad; dress with oil and vinegar.</li>
+<li>Serve sauce over spaghetti with the salad on the side.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div class="sugg-day">
+<div class="sugg-day-head"><span class="sugg-icon">🐟</span><h3>Day 3 — Baked Salmon with Roasted Potatoes &amp; Green Beans</h3><span class="sugg-tag">FISH</span><span class="sugg-tag">~$18–22</span></div>
+<div class="sugg-day-body">
+<p>Flaky baked salmon with crispy roasted potatoes and green beans — all on one sheet pan.</p>
+<div class="sugg-rec">
+<h4>Ingredients</h4>
+<ul>
+<li>1 lb salmon fillets (2 pieces)</li>
+<li>2–3 medium potatoes, cut into wedges</li>
+<li>1 bag frozen green beans</li>
+<li>Pantry: olive oil, lemon, dill, salt, pepper</li>
+</ul>
+<h4>Instructions</h4>
+<ol>
+<li>Preheat oven to 400°F (200°C).</li>
+<li>Toss potatoes with oil, salt and pepper; roast 20 minutes.</li>
+<li>Pat salmon dry; drizzle with oil and season with salt, pepper and dill.</li>
+<li>Add salmon and green beans to the pan. Bake 12–15 minutes until salmon flakes easily.</li>
+<li>Squeeze fresh lemon over the salmon before serving.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div class="sugg-day">
+<div class="sugg-day-head"><span class="sugg-icon">🍖</span><h3>Day 4 — Pork Loin Roast with Root Vegetables</h3><span class="sugg-tag">PORK</span><span class="sugg-tag">~$15–18</span></div>
+<div class="sugg-day-body">
+<p>Tender pork loin roast roasted with potatoes, carrots and onions — hearty and budget-friendly.</p>
+<div class="sugg-rec">
+<h4>Ingredients</h4>
+<ul>
+<li>2 lbs pork loin roast</li>
+<li>3–4 medium potatoes, quartered</li>
+<li>2–3 carrots, chopped · 2 onions, quartered</li>
+<li>Pantry: olive oil, rosemary, thyme, garlic powder, salt, pepper, optional broth</li>
+</ul>
+<h4>Instructions</h4>
+<ol>
+<li>Preheat oven to 375°F (190°C).</li>
+<li>Rub pork with oil, salt, pepper, garlic powder, rosemary and thyme.</li>
+<li>Place in a roasting pan and arrange vegetables around it. Add ½ cup broth if desired.</li>
+<li>Roast 45–60 minutes until pork reaches 145°F (63°C) and vegetables are tender.</li>
+<li>Rest the roast 10 minutes before slicing. Serve with the vegetables.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<h2 class="sugg-h2">🛒 Grocery List by Store</h2>
+<div class="sugg-intro">Prices are simulated estimates. Buy each item at the store listing it to maximize savings.</div>
+
+<div class="sugg-store">
+<div class="sugg-store-head">🛒 MAXI <em>chicken · beef · produce · eggs</em></div>
+<ul>
+<li>Boneless skinless chicken breasts — approx. 1.5 lbs</li>
+<li>Lean ground beef — approx. 1.5 lbs</li>
+<li>Broccoli — 2 heads</li>
+<li>Potatoes — 5 lb bag</li>
+<li>Eggs — 1 dozen</li>
+</ul>
+</div>
+
+<div class="sugg-store">
+<div class="sugg-store-head">🛒 SUPER C <em>pork · salmon · pantry</em></div>
+<ul>
+<li>Pork loin roast — approx. 2 lbs</li>
+<li>Salmon fillets — approx. 1 lb (2 pieces)</li>
+<li>Onions — 3 lb bag</li>
+<li>Carrots — 2 lb bag</li>
+<li>Spaghetti — 500 g</li>
+<li>Canned diced tomatoes — 2 cans</li>
+</ul>
+</div>
+
+<div class="sugg-store">
+<div class="sugg-store-head">🛒 ADONIS <em>fresh veg · Mediterranean</em></div>
+<ul>
+<li>Cucumbers — 2</li>
+<li>Bell peppers (assorted colors) — 2</li>
+<li>Olives — small amount (optional)</li>
+</ul>
+</div>
+
+<div class="sugg-store">
+<div class="sugg-store-head">🛒 METRO <em>fruit · dairy · bread</em></div>
+<ul>
+<li>Apples — a few for snacks</li>
+<li>Bananas — 1 bunch</li>
+<li>Yogurt — 1 large tub</li>
+<li>Bread — 1 loaf</li>
+</ul>
+</div>
+
+<div class="sugg-store">
+<div class="sugg-store-head">🛒 IGA <em>salad · rice · frozen</em></div>
+<ul>
+<li>Lettuce — 1 head</li>
+<li>Tomatoes — approx. 1 lb</li>
+<li>Rice — 2 kg bag</li>
+<li>Frozen mixed vegetables — 1 bag</li>
+</ul>
+</div>
+
+<div class="sugg-total"><span>🧾 Estimated grocery total</span><span>~$67 – $69 CAD</span></div>
 </div>
 </main>
 <div class="overlay" id="recipeOverlay" onclick="if(event.target===this)closeOverlay()"><div class="overlay-card"><button class="overlay-close" onclick="closeOverlay()">✕</button><div class="overlay-banner" id="overlayBanner"></div><div class="overlay-body" id="overlayBody"></div></div></div>
