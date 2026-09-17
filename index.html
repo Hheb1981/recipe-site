@@ -23,7 +23,8 @@ main{max-width:1280px;margin:0 auto;padding:28px 24px}
 .page{display:none}.page.active{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .category-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.random-btn{background:linear-gradient(135deg,var(--accent),var(--accent-light));color:#fff;border:none;border-radius:24px;padding:8px 18px;cursor:pointer;font-size:.78rem;font-weight:700;transition:all .2s;box-shadow:0 2px 8px rgba(16,185,129,.25)}.random-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,.35)}
+.random-btn{background:linear-gradient(135deg,var(--accent),var(--accent-light));color:#fff;border:none;border-radius:24px;padding:8px 18px;cursor:pointer;font-size:.78rem;font-weight:700;transition:all .2s;box-shadow:0 2px 8px rgba(16,185,129,.25)}.random-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,.35)}.random-btn.spin{animation:spinPulse .55s ease}
+@keyframes spinPulse{0%{transform:scale(1) rotate(0deg)}35%{transform:scale(1.08) rotate(12deg)}70%{transform:scale(.98) rotate(-10deg)}100%{transform:scale(1) rotate(0deg)}}
 .filter-btn{padding:8px 18px;border:2px solid var(--border);border-radius:24px;cursor:pointer;font-size:.78rem;font-weight:700;background:var(--bg-card);color:var(--text);transition:all .2s;display:flex;align-items:center;gap:6px}
 .filter-btn:hover{border-color:var(--accent);color:var(--accent-light);transform:translateY(-1px)}
 .filter-btn.active{color:#fff;border-color:transparent;transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.3)}
@@ -122,6 +123,7 @@ main{max-width:1280px;margin:0 auto;padding:28px 24px}
 <div class="nav-tabs">
 <button id="tab-browse" class="nav-tab active" onclick="switchPage('browse')">📋 Recipes</button>
 <button id="tab-planner" class="nav-tab" onclick="switchPage('planner')">📅 Meal Plan</button>
+<button id="tab-suggestion" class="nav-tab" onclick="switchPage('suggestion')">💡 Suggestion</button>
 <button id="tab-grocery" class="nav-tab" onclick="switchPage('grocery')">🛒 Grocery</button>
 </div>
 <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Search 88 recipes…" id="searchInput" oninput="renderRecipes()"></div>
@@ -130,7 +132,7 @@ main{max-width:1280px;margin:0 auto;padding:28px 24px}
 <main>
 <div id="page-browse" class="page active">
 <div class="category-bar" id="categoryBar">
-<button class="random-btn" onclick="showRandom()">🎲 Random</button>
+<button class="random-btn" onclick="showRandom()">🎲 Surprise me</button>
 </div>
 <div class="stats-bar" id="statsBar"></div>
 <div class="recipe-grid" id="recipeGrid"></div>
@@ -144,6 +146,9 @@ main{max-width:1280px;margin:0 auto;padding:28px 24px}
 <div id="page-grocery" class="page">
 <div class="top-bar"><h2>🛒 Grocery List</h2><button class="action-btn" onclick="window.print()">🖨️ Print</button><button class="action-btn" onclick="resetChecks()">☑️ Reset Checks</button></div>
 <div id="groceryContent"></div>
+</div>
+<div id="page-suggestion" class="page">
+<p style="text-align: center; padding: 50px; font-size: 1.5em; color: var(--text-dim);">💡 Suggestions Coming Soon!</p>
 </div>
 </main>
 <div class="overlay" id="recipeOverlay" onclick="if(event.target===this)closeOverlay()"><div class="overlay-card"><button class="overlay-close" onclick="closeOverlay()">✕</button><div class="overlay-banner" id="overlayBanner"></div><div class="overlay-body" id="overlayBody"></div></div></div>
@@ -243,10 +248,18 @@ function setFilter(c){
 }
 
 function showRandom(){
+  var btn=document.querySelector('.random-btn');
+  if(btn){btn.classList.remove('spin'); void btn.offsetWidth; btn.classList.add('spin'); setTimeout(function(){btn.classList.remove('spin');}, 600);}
   var f=getFiltered();
   if(!f.length){showToast('No recipes to pick from!');return;}
-  var r=f[Math.floor(Math.random()*f.length)];
+  var pool=f;
+  if(pool.length>1 && currentRecipe){
+    var filtered=pool.filter(function(r){return r.id!==currentRecipe.id;});
+    if(filtered.length)pool=filtered;
+  }
+  var r=pool[Math.floor(Math.random()*pool.length)];
   openRecipe(r.id);
+  showToast('Surprise: '+r.name);
 }
 function getFiltered(){
   var q=document.getElementById('searchInput').value.toLowerCase().trim();
